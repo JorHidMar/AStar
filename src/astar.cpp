@@ -18,6 +18,7 @@ std::vector<State> AStar::explore(State &a){
             continue;
         }
 
+        // TODO: g and h are changed!!
         float new_g = a.g + computeG->compute(a.p, next, board->getValue(next));
         float new_h = computeH->compute(next, goal);
 
@@ -67,13 +68,13 @@ bool AStar::compute(){
     return foundSolution;
 }
 
-void AStar::compute(VehicleState &p_init, VehicleState &p_end){
+bool AStar::compute(VehicleState &p_init, VehicleState &p_end){
     setPosition(p_init);
     setGoal(p_end);
-    compute();
+    return compute();
 }
 
-void AStar::setGoal(VehicleState& p){
+void AStar::setGoal(VehicleState &p){
     goal = p;
 }
 
@@ -81,7 +82,7 @@ void AStar::getGoal(VehicleState &p){
     p = goal;
 }
 
-void AStar::setPosition(VehicleState& p){
+void AStar::setPosition(VehicleState &p){
     pos = p;
 }
 
@@ -113,7 +114,7 @@ std::vector<VehicleState> AStar::getBestPath(){
     return path;
 }
 
-void AStar::printMapAndPath(std::vector<VehicleState> path){
+void AStar::printMapAndPath(std::vector<VehicleState> &path){
     if(path.empty()){
         std::cout << "Path is empty" << std::endl;
         return;

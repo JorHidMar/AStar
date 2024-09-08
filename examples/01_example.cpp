@@ -1,7 +1,7 @@
 #include <iostream>
 #include <memory>
-#include "AStarSimple/astar.hpp"
-#include "AStarSimple/board.hpp"
+#include "astar.hpp"
+#include "board.hpp"
 
 int main(){
 
