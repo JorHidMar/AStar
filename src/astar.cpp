@@ -18,7 +18,6 @@ std::vector<State> AStar::explore(State &a){
             continue;
         }
 
-        // TODO: g and h are changed!!
         float new_g = a.g + computeG->compute(a.p, next, board->getValue(next));
         float new_h = computeH->compute(next, goal);
 
@@ -94,16 +93,15 @@ void AStar::printMap(){
     board->printBoard();
 }
 
-std::vector<VehicleState> AStar::getBestPath(){
+bool AStar::getBestPath(std::vector<VehicleState> &path){
     if(!foundSolution){
         std::cout << "Could not find solution" << std::endl;
-        return {};
+        return false;
     }
 
     State goal_state = {goal};
     auto current_pos = closed_st.findGet(goal_state);
     
-    std::vector<VehicleState> path;
     path.push_back(current_pos.p);
     while(!current_pos.start){
         path.push_back(current_pos.parent);
@@ -111,7 +109,7 @@ std::vector<VehicleState> AStar::getBestPath(){
         current_pos = closed_st.findGet(current_state);
     }
 
-    return path;
+    return true;
 }
 
 void AStar::printMapAndPath(std::vector<VehicleState> &path){

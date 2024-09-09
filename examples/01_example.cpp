@@ -39,7 +39,8 @@ int main(){
     
     astar.compute();
 
-    auto path = astar.getBestPath();
+    std::vector<VehicleState> path;
+    astar.getBestPath(path);
     astar.printMapAndPath(path);
 
     return 0;
