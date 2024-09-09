@@ -1,6 +1,6 @@
 #include "board.hpp"
 
-FixedBoard::FixedBoard() {
+FixedBoard::FixedBoard(float wall_limit_, float unkown_cell_) : wall_limit(wall_limit_), unknown_cell(unknown_cell) {
 
 }
 
@@ -96,7 +96,12 @@ bool FixedBoard::checkAvailable(VehicleState &a){
     return false;
 }
 
-void FixedBoard::augmentBoard(int factor){
+void FixedBoard::augmentBoard(uint factor){
+
+    if(factor < 2){
+        return;
+    }
+
     std::unordered_map<std::string, float> board_copy;
     for(auto b: board){
         std::stringstream ss(b.first);
@@ -166,7 +171,7 @@ float FixedBoard::getValue(std::string st){
         return board[st];
     }
     
-    return 0.5;         // TODO: Should be variable, value for unknown cell
+    return unknown_cell;         // TODO: Should be variable, value for unknown cell
 }
 
 float FixedBoard::getValue(VehicleState &a){

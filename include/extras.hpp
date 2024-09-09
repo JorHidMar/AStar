@@ -5,20 +5,21 @@
 #include<cmath>
 #include<vector>
 
+/**
+ * @brief Structure to define the pose and twist of a vehicle.
+ */
 struct VehicleState
 {
-    // Position
+    // Pose
     int x=0;
     int y=0;
     float angle=0;
 
-    // Speed
+    // Twist
     float v=0;
     float w=0;
 
     float dt=0;
-
-    float limit = 0.5;
 
     void operator=(const VehicleState &vs){
         x = vs.x;
@@ -28,7 +29,7 @@ struct VehicleState
         w = vs.w;
     }
 
-    bool operator==(VehicleState &p){ // TODO: check better way for limit value
+    bool operator==(VehicleState &p){
         return x == p.x && y == p.y && angle == p.angle;
     }
 
@@ -49,6 +50,10 @@ struct VehicleState
     
 };
 
+/**
+ * @brief Structure to define constrains of the vehicle.
+ * @note To be integrated, used to customize algorithm to vehicle constrains
+ */
 struct VehicleConstrains
 {
     // Size
@@ -77,12 +82,15 @@ struct VehicleConstrains
     
 };
 
+/**
+ * Structure to define the state of the vehicle
+ */
 struct State
 {
     VehicleState p;
 
-    float g=0;        // G function
-    float h=0;        // Heuristic
+    float g=0;              // Cost
+    float h=0;              // Heuristic
     float f=0;
 
     VehicleState parent;
@@ -110,33 +118,58 @@ struct State
     }
 };
 
+/**
+ * @brief Base class to compute distance. 
+ */
 class computeDistance {
 public:
+    /**
+     * @brief compute Manahattan distance between VehicleState a to b.
+     */
     virtual float compute(VehicleState &a, VehicleState &b, float cost=1.){
         return cost * (std::abs(b.x-a.x) + std::abs(b.y-a.y));
     }
 };
 
+/**
+ * @brief Derived class to compute distance. 
+ */
 class computeEuclideanDistance : public computeDistance {
 public:
+    /**
+     * @brief compute euclidean distance between VehicleState a to b.
+     */
     float compute(VehicleState &a, VehicleState &b, float cost=1.) override {
         return cost * std::sqrt(std::pow(b.x-a.x, 2) + std::pow(b.y-a.y, 2)); 
     }
 };
 
+/**
+ * @brief Derived class to compute distance. 
+ */
 class computeTimeDistance : public computeDistance {
 public:
+    /**
+     * @brief compute time difference between VehicleState a to b.
+     */
     float compute(VehicleState &a, VehicleState &b, float cost=1.) override {
         return (b.dt - a.dt) * cost;    // TODO: dt does not seem to be the best variable name
     }
 };
 
+/**
+ * @brief Base class to define vehicle's movement. 
+ */
 class VehicleMovement {
 
     public:
 
     VehicleMovement(VehicleConstrains constrains_) : constrains(constrains_){}
 
+    /**
+     * @brief Compute the movement, add vehicleState m to vs.
+     * @return Resulting state.
+     */
     virtual VehicleState move(VehicleState &vs, VehicleState &m){
 
         VehicleState state;
@@ -158,13 +191,21 @@ class VehicleMovement {
 
 protected:
 
+    /**
+     * @brief Check if value is within range.
+     * @param a Value that we have.
+     * @param m Maximum value we can have.
+     * @return Corrected value.
+     */
     float applyConst(float a, float m){
         return (std::abs(a) <= m) ? a : (a <= 0 ? -m : m);
     }
 
-    float normalizeAngle(float ang){
+    /**
+     * @brief Angle between [-pi, pi)
+     */
+    float normalizeAngle(float ang){ // 
         float a=ang;
-        // std::cout << ang << std::endl;
         if(ang > M_PI ){
             a -= 2*M_PI;
         } else if(ang < -M_PI){
@@ -173,10 +214,12 @@ protected:
 
         return a;
     }
-
-
 };
 
+/**
+ * @brief Derived class to define vehicle's movement for differential robot.
+ * @note To be integrated. 
+ */
 class DifferentialRobotMovement : public VehicleMovement {
     public:
 
@@ -184,6 +227,9 @@ class DifferentialRobotMovement : public VehicleMovement {
         compute_directions();
     }
 
+    /**
+     * @brief Update move_directions to get the movement direction map.
+     */
     void compute_directions() {
         this->move_directions.clear();
         float dt = 0.1;
@@ -191,15 +237,17 @@ class DifferentialRobotMovement : public VehicleMovement {
         int fw = this->constrains.fw;
         for(int i=0; i<=fv; i++){
             float v = (float)i * this->constrains.max_v / (float)fv;
-            // std::cout << "v " << v << std::endl;
             for(int j=-fw; j<=fw; j++){
-                // std::cout << " ===== " << std::endl;
                 float w = (float)j * this->constrains.max_v / (float)fw;
                 this->move_directions.push_back({0,0,v,w,dt});
             }
         }
     }
 
+    /**
+     * @brief Compute the movement, add vehicleState m to vs.
+     * @return Resulting state.
+     */
     VehicleState move(VehicleState &vs, VehicleState &m) override {
 
         VehicleState state;
@@ -220,7 +268,6 @@ class DifferentialRobotMovement : public VehicleMovement {
             state.x = state.v / -state.w * (-std::sin(vs.angle) + std::sin(vs.angle - state.w * dt));
             state.y = state.v / -state.w * (std::cos(vs.angle) - std::cos(vs.angle - state.w * dt));
         }
-        // std::cout << vs.angle << " " << state.w << " " << dt << std::endl;
         state.angle = this->normalizeAngle(vs.angle - state.w * dt); // TODO: Find better way, case for high w
         // state.angle = vs.angle + state.w * dt;
 
