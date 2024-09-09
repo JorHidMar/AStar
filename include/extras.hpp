@@ -83,7 +83,7 @@ struct VehicleConstrains
 };
 
 /**
- * Structure to define the state of the vehicle
+ * @brief Structure to define the state of the vehicle
  */
 struct State
 {
