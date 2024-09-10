@@ -15,8 +15,6 @@ public:
 
     ~AStar();
 
-    std::vector<State> explore(State &a);
-
     /**
      * @brief Compute A* algorithm.
      * @return Found a solution.
@@ -74,7 +72,14 @@ public:
      * @param path: Path to be printed on top of the map
      * @note Not suitable for big maps (will not print them properly).
      */
-    void printMapAndPath(std::vector<VehicleState> &path);  // TODO: Create class and export to image
+    void printMapAndPath(std::vector<VehicleState> &path);
+
+    /**
+     * @brief Export map to ppm file
+     * @param filename: Name of file 
+     * @note Only supports .ppm format.
+     */
+    void exportImage(std::string &filename, uint factor);
 
     /**
      * @brief Set compute cost.
@@ -96,6 +101,13 @@ public:
      * @note You can implement your own movement.
      */
     void setVehicle(std::shared_ptr<VehicleMovement> veh);
+
+protected:
+
+    /**
+     * @brief Get future states based on present ones.
+     */
+    std::vector<State> explore(State &a);
 
 private:
     VehicleState pos;

@@ -120,6 +120,10 @@ void AStar::printMapAndPath(std::vector<VehicleState> &path){
     board->printBoardAndPath(path);
 }
 
+void AStar::exportImage(std::string &filename, uint factor){
+    board->exportMap(filename, factor);
+}
+
 void AStar::setComputeCost(std::shared_ptr<computeDistance> cost_function){
     computeG = cost_function;
 }

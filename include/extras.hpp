@@ -257,7 +257,6 @@ class DifferentialRobotMovement : public VehicleMovement {
 
         float dt = m.dt;
 
-        // TODO: Change names
         state.v = this->applyConst(m.v, this->constrains.max_v);
         state.w = this->applyConst(m.w, this->constrains.max_w);
 

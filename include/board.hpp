@@ -4,10 +4,11 @@
 #include <unordered_map>
 #include <map>
 #include <sstream>
+#include <fstream>
 
 class FixedBoard {
     public:
-    FixedBoard(float wall_limit_=0.9, float unkown_cell=0.5);
+    FixedBoard(float wall_limit_=0.9, float unknown_cell_=0.5);
 
     ~FixedBoard();
 
@@ -42,6 +43,12 @@ class FixedBoard {
     void printBoardAndPath(std::vector<VehicleState> path);
     
     /**
+     * @brief Save map in an image.
+     * @param filename: Name of the file to export the map.
+     */
+    void exportMap(const std::string filename, uint factor=5);
+
+    /**
      * @brief Check if the position for the vehicleState exists and it is not blocked.
      */
     bool checkAvailable(VehicleState &a);
@@ -50,13 +57,13 @@ class FixedBoard {
      * @brief Expand the map.
      * @param factor: Factor to expand the map. It must be >1.
      */
-    void augmentBoard(uint factor=2);
+    void updateAugmentBoard(uint factor=2); // TODO: Change name
 
     /**
      * @brief Multiply the map for a kernel to expand obstacles or uncertainties.
      * @param kernel: A 3x3 matrix to apply on the map.
      */
-    void expandBoard(std::vector<std::vector<float>> kernel);   // TODO: Support other type of kernels.
+    void expandBoard(std::vector<std::vector<float>> &kernel);   // TODO: Support other type of kernels.
 
     /**
      * @brief Get value of the map for a position.
@@ -73,21 +80,23 @@ class FixedBoard {
     float getValue(VehicleState &a);
     
     /**
-     * @brief get neighbours from position.
-     * @param i: y value.
-     * @param j: x value.
-     * @return Vector of string with the neighbour positions. 
-     */
-    std::vector<std::string> getNeighbours(int i, int j);   // TODO: It should be private.
-
-    /**
      * @brief Modify a cell in the map.
      * @param st: Position that you want to change.
      * @param v: New value for the position.  
      */
     void addValue(std::string st, float v);
 
-    private:
+protected:
+
+    /**
+     * @brief Expand the map.
+     * @param factor: Factor to expand the map.
+     * @param board_copy: Copy of the map that you want to augment.
+     */
+    void augmentBoard(uint factor, std::unordered_map<std::string, float> &board_copy);
+
+private:
+
     std::unordered_map<std::string, float> board;
     int min_i=0, max_i=0;
     int min_j=0, max_j=0;

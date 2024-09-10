@@ -1,6 +1,6 @@
 #include "board.hpp"
 
-FixedBoard::FixedBoard(float wall_limit_, float unkown_cell_) : wall_limit(wall_limit_), unknown_cell(unknown_cell) {
+FixedBoard::FixedBoard(float wall_limit_, float unknown_cell_) : wall_limit(wall_limit_), unknown_cell(unknown_cell_) {
 
 }
 
@@ -83,6 +83,38 @@ void FixedBoard::printBoardAndPath(std::vector<VehicleState> path){
         std::cout << std::endl;
     }
 }
+
+void FixedBoard::exportMap(const std::string filename, uint factor){
+
+    // TODO: This should be divided into two, all this is recopied from before
+    if(factor < 2){
+        return;
+    }
+
+    std::unordered_map<std::string, float> board_copy;
+    augmentBoard(factor, board_copy);
+
+    std::ofstream imageFile(filename);
+
+    imageFile << "P2\n" << factor * (max_j - min_j) << " " << factor * (max_i - min_i) << "\n255\n";
+
+    for(int i=factor*min_i; i<factor*max_i; i++){
+        for(int j=factor*min_j; j<factor*max_j; j++){
+            std::string key = std::to_string(i) + "_";
+            key += std::to_string(j);
+            float value;
+            if(board_copy.find(key) != board_copy.end()){
+                value =  board_copy[key];
+            } else {
+                value = unknown_cell;
+            }
+            auto v = value * 255.;
+            imageFile << (int)v << " ";
+        }
+        imageFile << "\n";
+    }
+    imageFile.close();
+}
     
 bool FixedBoard::checkAvailable(VehicleState &a){
 
@@ -96,13 +128,8 @@ bool FixedBoard::checkAvailable(VehicleState &a){
     return false;
 }
 
-void FixedBoard::augmentBoard(uint factor){
+void FixedBoard::augmentBoard(uint factor, std::unordered_map<std::string, float> &board_copy){ // TODO: Move to private
 
-    if(factor < 2){
-        return;
-    }
-
-    std::unordered_map<std::string, float> board_copy;
     for(auto b: board){
         std::stringstream ss(b.first);
         int n[2];
@@ -122,11 +149,20 @@ void FixedBoard::augmentBoard(uint factor){
         }
         
     }
+}
+
+void FixedBoard::updateAugmentBoard(uint factor){
+
+    if(factor < 2){
+        return;
+    }
+
+    std::unordered_map<std::string, float> board_copy;
+    augmentBoard(factor, board_copy);
 
     board.clear();
     board = std::move(board_copy);
 
-    // TODO: How is affected by negative numbers?
     min_i *= factor;
     min_j *= factor;
 
@@ -134,7 +170,9 @@ void FixedBoard::augmentBoard(uint factor){
     max_j *= factor;
 }
 
-void FixedBoard::expandBoard(std::vector<std::vector<float>> kernel){
+void FixedBoard::expandBoard(std::vector<std::vector<float>> &kernel){
+    int kSize = kernel.size()/2;
+
     std::unordered_map<std::string, float> board_copy;
     for(auto b: board){
         if(b.second >= wall_limit){
@@ -148,18 +186,15 @@ void FixedBoard::expandBoard(std::vector<std::vector<float>> kernel){
         while(std::getline(ss, num, '_')){
             n[i++] = std::stoi(num);
         }
-        auto neigh = getNeighbours(n[0], n[1]);
-
-        board_copy[b.first] = 
-            kernel[0][0] * getValue(neigh[0]) + 
-            kernel[0][1] * getValue(neigh[1]) +  
-            kernel[0][2] * getValue(neigh[2]) + 
-            kernel[1][0] * getValue(neigh[3]) +  
-            kernel[1][1] * getValue(neigh[4]) +  
-            kernel[1][2] * getValue(neigh[5]) + 
-            kernel[2][0] * getValue(neigh[6]) +  
-            kernel[2][1] * getValue(neigh[7]) +  
-            kernel[2][2] * getValue(neigh[8]);
+        board_copy[b.first] = 0.;
+        // TODO: Find better alternative that can better suit larger kernels. Although I would say that kernels of size 3x3 - 5x5 should be enough.  
+        for(int i=-kSize; i<=kSize; i++){
+            for(int j=-kSize; j<=kSize; j++){
+                std::string s = std::to_string(n[0]+i) + "_" + std::to_string(n[1]+j);
+                board_copy[b.first] += kernel[i+kSize][j+kSize] * getValue(s);
+            }
+        }
+        
     }
 
     board.clear();
@@ -170,28 +205,13 @@ float FixedBoard::getValue(std::string st){
     if(board.find(st) != board.end()){
         return board[st];
     }
-    
-    return unknown_cell;         // TODO: Should be variable, value for unknown cell
+    return unknown_cell;
 }
 
 float FixedBoard::getValue(VehicleState &a){
     std::string st = std::to_string(a.x) + "_";
     st += std::to_string(a.y);
     return board[st];
-}
-    
-std::vector<std::string> FixedBoard::getNeighbours(int i, int j){
-    return {
-        {std::to_string(i-1) + "_" + std::to_string(j-1)},
-        {std::to_string(i-1) + "_" + std::to_string(j)},
-        {std::to_string(i-1) + "_" + std::to_string(j+1)},
-        {std::to_string(i) + "_" + std::to_string(j-1)},
-        {std::to_string(i) + "_" + std::to_string(j)},
-        {std::to_string(i) + "_" + std::to_string(j+1)},
-        {std::to_string(i+1) + "_" + std::to_string(j-1)},
-        {std::to_string(i+1) + "_" + std::to_string(j)},
-        {std::to_string(i+1) + "_" + std::to_string(j+1)}
-    };
 }
 
 void FixedBoard::addValue(std::string st, float v){
