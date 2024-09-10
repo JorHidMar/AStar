@@ -57,13 +57,13 @@ class FixedBoard {
      * @brief Expand the map.
      * @param factor: Factor to expand the map. It must be >1.
      */
-    void updateAugmentBoard(uint factor=2); // TODO: Change name
+    void updateAugmentBoard(uint factor=2);
 
     /**
      * @brief Multiply the map for a kernel to expand obstacles or uncertainties.
      * @param kernel: A 3x3 matrix to apply on the map.
      */
-    void expandBoard(std::vector<std::vector<float>> &kernel);   // TODO: Support other type of kernels.
+    void expandBoard(std::vector<std::vector<float>> &kernel);
 
     /**
      * @brief Get value of the map for a position.
@@ -86,6 +86,16 @@ class FixedBoard {
      */
     void addValue(std::string st, float v);
 
+    /**
+     * @brief Update value for cells outside of the map
+     */
+    void updateUnknownCells(float unknown_cell_);
+
+    /**
+     * @brief Update when a cell is considered a wall.
+     */
+    void updateWallValue(float wall_limit_);
+
 protected:
 
     /**
@@ -101,6 +111,6 @@ private:
     int min_i=0, max_i=0;
     int min_j=0, max_j=0;
 
-    float wall_limit = 0.9;         // TODO: Modify the paramenter
-    float unknown_cell = 0.5;       // TODO: Modify the paramenter
+    float wall_limit = 0.9;
+    float unknown_cell = 0.5;
 };

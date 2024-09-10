@@ -86,7 +86,6 @@ void FixedBoard::printBoardAndPath(std::vector<VehicleState> path){
 
 void FixedBoard::exportMap(const std::string filename, uint factor){
 
-    // TODO: This should be divided into two, all this is recopied from before
     if(factor < 2){
         return;
     }
@@ -128,7 +127,7 @@ bool FixedBoard::checkAvailable(VehicleState &a){
     return false;
 }
 
-void FixedBoard::augmentBoard(uint factor, std::unordered_map<std::string, float> &board_copy){ // TODO: Move to private
+void FixedBoard::augmentBoard(uint factor, std::unordered_map<std::string, float> &board_copy){
 
     for(auto b: board){
         std::stringstream ss(b.first);
@@ -216,4 +215,13 @@ float FixedBoard::getValue(VehicleState &a){
 
 void FixedBoard::addValue(std::string st, float v){
     board[st] = v;
+}
+
+
+void FixedBoard::updateUnknownCells(float unknown_cell_){
+    unknown_cell = unknown_cell_;
+}
+
+void FixedBoard::updateWallValue(float wall_limit_){
+    wall_limit = wall_limit_;
 }
