@@ -1,9 +1,10 @@
 #include "stateDataType.hpp"
 
+// TODO: State must contain state...
 void ListState::insert(State &state){
     
-    std::string key = std::to_string(state.p.x) + "_";
-    key += std::to_string(state.p.y);
+    //asdf to state
+    std::string key = state.p.convert2state();
 
     if(m.find(key) == m.end()){         // If position is not in the list, add insert it to m and m2. 
         m.insert({key, state});
@@ -27,22 +28,18 @@ void ListState::pop(State &state){
     state = *m2.begin();
     m2.erase(m2.begin());
 
-    std::string key = std::to_string(state.p.x) + "_";
-    key += std::to_string(state.p.y);
-
-    m.erase(key);
+    //asdf to state
+    m.erase(state.p.convert2state());
 }
 
 bool ListState::find(State &state){
-    std::string key = std::to_string(state.p.x) + "_";
-    key += std::to_string(state.p.y);
-
-    return m.find(key) != m.end();
+    //asdf to state
+    return m.find(state.p.convert2state()) != m.end();
 }
 
 State ListState::findGet(State &state){
-    std::string key = std::to_string(state.p.x) + "_";
-    key += std::to_string(state.p.y);
+    //asdf to state
+    std::string key = state.p.convert2state();
 
     if(m.find(key) != m.end()){
         return m[key];

@@ -1,9 +1,10 @@
 #pragma once
 
 // #include "astar.hpp"
-#include<iostream>
-#include<cmath>
-#include<vector>
+#include <iostream>
+#include <cmath>
+#include <vector>
+#include <sstream>
 
 /**
  * @brief Structure to define the pose and twist of a vehicle.
@@ -13,7 +14,7 @@ struct VehicleState
     // Pose
     int x=0;
     int y=0;
-    float angle=0;
+    int angle=0;
 
     // Twist
     float v=0;
@@ -46,6 +47,36 @@ struct VehicleState
     void print(){
         std::cout << "Position: " << x << ", " << y << ", " << angle << std::endl;
         std::cout << "Speed: " << v << ", " << w << std::endl;
+    }
+
+    std::string str(){ // TODO you should be able to change this function when defining class
+        std::string key = std::to_string(x) + "_" + std::to_string(y); 
+        return key;  
+    }
+
+    std::string convert2state(){
+        std::string key = std::to_string(x) + "_" + std::to_string(y); 
+        return key;  
+    }
+
+    // TODO: better to use a vector or something else? But what if im not interested in others?
+    static std::string convert2pos(int i, int j){
+        std::string key = std::to_string(i) + "_" + std::to_string(j); 
+        return key;  
+    }
+
+    static VehicleState rConvert2pos(const std::string &st){    // TODO: not necessary to return whole state
+        VehicleState vs;
+        std::stringstream ss(st);
+        std::vector<int> n;
+        int k=0;
+        std::string num;
+        while(std::getline(ss, num, '_')){
+            n.push_back(std::stoi(num));
+        }
+        vs.x = n[0];
+        vs.y = n[1];
+        return vs;
     }
     
 };
@@ -160,7 +191,7 @@ public:
 /**
  * @brief Base class to define vehicle's movement. 
  */
-class VehicleMovement {
+class VehicleMovement { //TODO: Review names for derived classes and the description
 
     public:
 
@@ -217,6 +248,88 @@ protected:
 };
 
 /**
+ * @brief Derived class to define vehicle's movement for 8 directions
+ */
+class MultiDirectionVehicleMovement : public VehicleMovement {
+
+    MultiDirectionVehicleMovement(VehicleConstrains constrains_) : VehicleMovement(constrains_){
+        compute_directions();
+    }
+
+    void compute_directions(){
+        this->move_directions.clear();
+        this->move_directions = {{-1,-1}, {-1,0}, {-1,1}, {0,-1}, {0,1}, {1,-1}, {1,0}, {1,1}};
+    }
+
+};
+
+/**
+ * @brief Derived class to define vehicle's movement, single action
+ */
+class SingleActionVehicleMovement : public VehicleMovement{
+
+    SingleActionVehicleMovement(VehicleConstrains constrains_) : VehicleMovement(constrains_){
+        compute_directions();
+    }
+
+    void compute_directions() {
+        this->move_directions.clear();
+        this->move_directions = {{1,0},{-1,0},{0,0,45},{0,0,-45}}; // Easier to keep track with degrees. // TODO: Better to keep internal calculation in degrees or move to radians?
+    }
+
+    VehicleState move(VehicleState &vs, VehicleState &m) override { // TODO: Should it be static? Probably not..
+        // TODO: This assumes that movements are the ones given in move_directions
+        VehicleState state = vs;
+        state.angle += m.angle;
+
+        if(state.angle <= -180){
+            state.angle += 360;
+        } else if(state.angle > 180){
+            state.angle -= 360;
+        }
+
+        if(m.angle == 0) {
+            return state;
+        }
+
+        switch (state.angle){              // TODO: Unnecessary when m.angle != 0
+            case -135:
+                state.x -= m.x;
+                state.y += m.x;       // Board should be inverted at some point to avoid this
+                break;
+            case -90:
+                state.y += m.x;
+                break;
+            case -45:
+                state.x += m.x;
+                state.y += m.x;
+                break;
+            case 0:
+                state.x += m.x;
+                break;
+            case 45:
+                state.x += m.x;
+                state.y -= m.x;
+                break;
+            case 90:
+                state.y -= m.x;
+                break;
+            case 135:
+                state.x -= m.x;
+                state.y -= m.x;
+                break;
+            case 180:
+                state.x -= m.x;
+                break;
+            default:
+                break;
+        }
+
+        return state;
+    }
+};
+
+/**
  * @brief Derived class to define vehicle's movement for differential robot.
  * @note To be integrated. 
  */
@@ -239,7 +352,7 @@ class DifferentialRobotMovement : public VehicleMovement {
             float v = (float)i * this->constrains.max_v / (float)fv;
             for(int j=-fw; j<=fw; j++){
                 float w = (float)j * this->constrains.max_v / (float)fw;
-                this->move_directions.push_back({0,0,v,w,dt});
+                this->move_directions.push_back({0,0,0,v,w,dt});
             }
         }
     }

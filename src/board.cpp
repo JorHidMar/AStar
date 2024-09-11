@@ -17,9 +17,7 @@ void FixedBoard::createEmptyBoard(int H, int W){
 
     for(int i=0; i<H; i++){
         for(int j=0; j<W; j++){
-            std::string key = std::to_string(i) + "_";
-            key += std::to_string(j);   
-            board.insert({key, 0.0});
+            board.insert({VehicleState::convert2pos(i,j), 0.0});
         }
     }
 }
@@ -31,9 +29,7 @@ void FixedBoard::loadBoard(std::vector<std::vector<float>> board_){
         int j=0;
         for(auto col: row){
             if(col != -1) {
-                std::string key = std::to_string(i) + "_";
-                key += std::to_string(j);
-                board.insert({key, col});
+                board.insert({VehicleState::convert2pos(i,j), col});
             }
         }
     }
@@ -41,14 +37,13 @@ void FixedBoard::loadBoard(std::vector<std::vector<float>> board_){
 
 void FixedBoard::loadBoard(std::vector<std::vector<float>> &board_){
     board.clear();
-    // board.insert(board_.begin(), board_.end());
+    // board.insert(board_.begin(), board_.end()); // TODO
 }
 
 void FixedBoard::printBoard(){
     for(int i=min_i; i<max_i; i++){
         for(int j=min_j; j<max_j; j++){
-            std::string st = std::to_string(i) + "_";
-            st += std::to_string(j);
+            std::string st = VehicleState::convert2pos(i,j);
 
             if(board.find(st) != board.end()){
                 std::cout << board[st] << "\t";
@@ -63,15 +58,13 @@ void FixedBoard::printBoard(){
 
 void FixedBoard::printBoardAndPath(std::vector<VehicleState> path){
     for(auto p : path){
-        std::string st = std::to_string(p.x) + "_";
-        st += std::to_string(p.y);
+        std::string st = p.str();
         board[st] = 2.;
     }
 
     for(int i=min_i; i<max_i; i++){
         for(int j=min_j; j<max_j; j++){
-            std::string st = std::to_string(i) + "_";
-            st += std::to_string(j);
+            std::string st = VehicleState::convert2pos(i,j);
 
             if(board.find(st) != board.end()){
                 std::cout << board[st] << "\t";
@@ -99,8 +92,7 @@ void FixedBoard::exportMap(const std::string filename, uint factor){
 
     for(int i=factor*min_i; i<factor*max_i; i++){
         for(int j=factor*min_j; j<factor*max_j; j++){
-            std::string key = std::to_string(i) + "_";
-            key += std::to_string(j);
+            std::string key = VehicleState::convert2pos(i,j);
             float value;
             if(board_copy.find(key) != board_copy.end()){
                 value =  board_copy[key];
@@ -116,9 +108,7 @@ void FixedBoard::exportMap(const std::string filename, uint factor){
 }
     
 bool FixedBoard::checkAvailable(VehicleState &a){
-
-    std::string st = std::to_string(a.x) + "_";
-    st += std::to_string(a.y);
+    std::string st = a.str();
     if(board.find(st) != board.end()){
         if(board[st] < wall_limit){
             return true;
@@ -130,18 +120,11 @@ bool FixedBoard::checkAvailable(VehicleState &a){
 void FixedBoard::augmentBoard(uint factor, std::unordered_map<std::string, float> &board_copy){
 
     for(auto b: board){
-        std::stringstream ss(b.first);
-        int n[2];
-        int k=0;
-        std::string num;
-        while(std::getline(ss, num, '_')){
-            n[k++] = std::stoi(num);
-        }
+        auto n = VehicleState::rConvert2pos(b.first);
 
         for(int i=0; i<factor; i++){
             for(int j=0; j<factor; j++){
-                std::string st = std::to_string(n[0]*factor+i) + "_";
-                st += std::to_string(n[1]*factor+j);
+                std::string st = VehicleState::convert2pos(n.x*factor+i, n.y*factor+j);
                 board_copy[st] = b.second;
             }
             
@@ -178,18 +161,12 @@ void FixedBoard::expandBoard(std::vector<std::vector<float>> &kernel){
             board_copy[b.first] = 1.;
             continue;
         }
-        std::stringstream ss(b.first);
-        int n[2];
-        int i=0;
-        std::string num;
-        while(std::getline(ss, num, '_')){
-            n[i++] = std::stoi(num);
-        }
+        auto n = VehicleState::rConvert2pos(b.first);
         board_copy[b.first] = 0.;
         // TODO: Find better alternative that can better suit larger kernels. Although I would say that kernels of size 3x3 - 5x5 should be enough.  
         for(int i=-kSize; i<=kSize; i++){
             for(int j=-kSize; j<=kSize; j++){
-                std::string s = std::to_string(n[0]+i) + "_" + std::to_string(n[1]+j);
+                std::string s = VehicleState::convert2pos(n.x+i, n.y+j);
                 board_copy[b.first] += kernel[i+kSize][j+kSize] * getValue(s);
             }
         }
@@ -208,9 +185,7 @@ float FixedBoard::getValue(std::string st){
 }
 
 float FixedBoard::getValue(VehicleState &a){
-    std::string st = std::to_string(a.x) + "_";
-    st += std::to_string(a.y);
-    return board[st];
+    return board[a.str()];
 }
 
 void FixedBoard::addValue(std::string st, float v){
