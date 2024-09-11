@@ -6,6 +6,10 @@
 #include <sstream>
 #include <fstream>
 
+// TODO: Make sure that min-max values are updated when adding new values
+// TODO: Remove these values
+// TODO: Board should be a type itself, in general this is some fancy interface to the type..?
+
 class FixedBoard {
     public:
     FixedBoard(float wall_limit_=0.9, float unknown_cell_=0.5);
@@ -29,7 +33,17 @@ class FixedBoard {
      * @brief Load a board based on an existing map.
      * @param board_: Board to copy.
      */
-    void loadBoard(std::vector<std::vector<float>> &board_);
+    void loadBoard(std::unordered_map<std::string, float> &board_);
+
+    void loadFromFile(std::string filename);
+
+    void operator=(FixedBoard &fb){
+        loadBoard(fb.board);
+        min_i = fb.min_i;
+        max_i = fb.max_i;
+        min_j = fb.min_j;
+        max_j = fb.max_j;
+    }
 
     /**
      * @brief Print the board.
@@ -47,6 +61,12 @@ class FixedBoard {
      * @param filename: Name of the file to export the map.
      */
     void exportMap(const std::string filename, uint factor=5);
+
+    /**
+     * @brief Save map in csv file.
+     * @param filename: Name of the file to export the map.
+     */
+    void exportMapCSV(const std::string filename);
 
     /**
      * @brief Check if the position for the vehicleState exists and it is not blocked.
@@ -96,6 +116,9 @@ class FixedBoard {
      */
     void updateWallValue(float wall_limit_);
 
+    void getBoard(std::unordered_map<std::string, float> &board_);
+
+    std::unordered_map<std::string, float> board;
 protected:
 
     /**
@@ -107,7 +130,6 @@ protected:
 
 private:
 
-    std::unordered_map<std::string, float> board;
     int min_i=0, max_i=0;
     int min_j=0, max_j=0;
 

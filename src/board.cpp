@@ -28,16 +28,60 @@ void FixedBoard::loadBoard(std::vector<std::vector<float>> board_){
     for(auto row: board_){
         int j=0;
         for(auto col: row){
-            if(col != -1) {
+            if(col >= 0) {
                 board.insert({VehicleState::convert2pos(i,j), col});
             }
+            j++;
         }
+        i++;
     }
+    min_i = 0;
+    min_j = 0;
+    max_i = board_.size();
+    max_j = board_[0].size();
 }
 
-void FixedBoard::loadBoard(std::vector<std::vector<float>> &board_){
+void FixedBoard::loadBoard(std::unordered_map<std::string, float> &board_){
     board.clear();
-    // board.insert(board_.begin(), board_.end()); // TODO
+    board.insert(board_.begin(), board_.end()); // TODO
+}
+
+void FixedBoard::loadFromFile(std::string filename){
+    std::ifstream file(filename);
+
+    min_i = 0;
+    min_j = 0;
+    max_i = 0;
+    max_j = 0;
+
+    if(file.is_open()){
+        std::string line;
+        int i=0;
+        while (std::getline(file, line)) {
+            int j=0;
+            std::vector<int> row;
+            std::stringstream ss(line);
+            std::string value;
+            
+            bool empty_line = true;
+            while (std::getline(ss, value, ',')) {
+                float val = std::stof(value);
+                if(val >= 0){
+                    board.insert({VehicleState::convert2pos(i,j), val});
+                    max_j = std::max(j+1, max_j);
+                    empty_line = false;
+                }
+                j++;
+            }
+            if(!empty_line){
+                max_i = std::max(i+1, max_i);
+            }
+            i++;
+        }
+        file.close();
+    } else {
+        std::cout << "otherwise" << std::endl;
+    }
 }
 
 void FixedBoard::printBoard(){
@@ -57,6 +101,7 @@ void FixedBoard::printBoard(){
 }
 
 void FixedBoard::printBoardAndPath(std::vector<VehicleState> path){
+    // TODO: This should not override the board
     for(auto p : path){
         std::string st = p.str();
         board[st] = 2.;
@@ -105,6 +150,31 @@ void FixedBoard::exportMap(const std::string filename, uint factor){
         imageFile << "\n";
     }
     imageFile.close();
+}
+
+void FixedBoard::exportMapCSV(const std::string filename){
+    std::ofstream file(filename);
+
+    if (file.is_open()) {
+        for(int i=min_i; i<max_i; i++){
+            for(int j=min_j; j<max_j; j++){
+                std::string st = VehicleState::convert2pos(i,j);
+
+                if(board.find(st) != board.end()){
+                    // std::cout << board[st] << "\t";
+                    file << board[st];
+                } else {
+                    file << "-1";
+                }
+                if(j != max_j-1){
+                    file << ",";
+                }
+                
+            }
+            file << "\n";
+        } 
+        file.close();
+    }
 }
     
 bool FixedBoard::checkAvailable(VehicleState &a){
@@ -189,6 +259,11 @@ float FixedBoard::getValue(VehicleState &a){
 }
 
 void FixedBoard::addValue(std::string st, float v){
+    auto n = VehicleState::rConvert2pos(st);
+    min_i = std::min(n.x, min_i);
+    min_j = std::min(n.y, min_j);
+    max_i = std::max(n.x, max_i);
+    max_j = std::max(n.y, max_j);
     board[st] = v;
 }
 
@@ -199,4 +274,9 @@ void FixedBoard::updateUnknownCells(float unknown_cell_){
 
 void FixedBoard::updateWallValue(float wall_limit_){
     wall_limit = wall_limit_;
+}
+
+void FixedBoard::getBoard(std::unordered_map<std::string, float> &board_){
+    board_.clear();
+    board_.insert(board.begin(), board.end());
 }
