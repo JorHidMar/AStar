@@ -8,18 +8,15 @@ int main(){
 
     // Generate new map 10x10
     std::shared_ptr<FixedBoard> b = std::make_shared<FixedBoard>(0.95, 0.5);
-    b->createEmptyBoard(10,10);
-
-    // Add obstacles
-    b->addValue("1_2", 1.);
-    b->addValue("2_4", 1.);
-
+    b->loadFromFile("../examples/example_map");
+    
     AStar astar(b);
 
     // Configure A* algorithm
     VehicleConstrains constrains;
     std::shared_ptr<computeDistance> computeClass = std::make_shared<computeEuclideanDistance>();
-    std::shared_ptr<VehicleMovement> vMove = std::make_shared<VehicleMovement>(constrains);
+    std::shared_ptr<VehicleMovement> vMove = std::make_shared<MultiDirectionVehicleMovement>(constrains);
+    // std::shared_ptr<VehicleMovement> vMove = std::make_shared<VehicleMovement>(constrains);
 
     astar.setComputeCost(computeClass);
     astar.setComputeHeuristic(computeClass);
@@ -27,7 +24,7 @@ int main(){
     
     // Define initial and target position.
     VehicleState iState = {0,0};
-    VehicleState fState = {10,10};
+    VehicleState fState = {12,9};
     astar.setPosition(iState);
     astar.setGoal(fState);
     

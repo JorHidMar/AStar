@@ -18,7 +18,7 @@ int main(){
 
     // Configure A* algorithm
     VehicleConstrains constrains;
-    std::shared_ptr<computeDistance> computeClass = std::make_shared<computeEuclideanDistance>();
+    std::shared_ptr<computeDistance> computeClass = std::make_shared<computeDistance>();
     std::shared_ptr<VehicleMovement> vMove = std::make_shared<VehicleMovement>(constrains);
 
     astar.setComputeCost(computeClass);

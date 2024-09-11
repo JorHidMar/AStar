@@ -195,7 +195,7 @@ class VehicleMovement { //TODO: Review names for derived classes and the descrip
 
     public:
 
-    VehicleMovement(VehicleConstrains constrains_) : constrains(constrains_){}
+    VehicleMovement(VehicleConstrains &constrains_) : constrains(constrains_){}
 
     /**
      * @brief Compute the movement, add vehicleState m to vs.
@@ -251,8 +251,8 @@ protected:
  * @brief Derived class to define vehicle's movement for 8 directions
  */
 class MultiDirectionVehicleMovement : public VehicleMovement {
-
-    MultiDirectionVehicleMovement(VehicleConstrains constrains_) : VehicleMovement(constrains_){
+public:
+    MultiDirectionVehicleMovement(VehicleConstrains &constrains_) : VehicleMovement(constrains_){
         compute_directions();
     }
 
@@ -267,7 +267,7 @@ class MultiDirectionVehicleMovement : public VehicleMovement {
  * @brief Derived class to define vehicle's movement, single action
  */
 class SingleActionVehicleMovement : public VehicleMovement{
-
+public:
     SingleActionVehicleMovement(VehicleConstrains constrains_) : VehicleMovement(constrains_){
         compute_directions();
     }
@@ -336,7 +336,7 @@ class SingleActionVehicleMovement : public VehicleMovement{
 class DifferentialRobotMovement : public VehicleMovement {
     public:
 
-    DifferentialRobotMovement(VehicleConstrains constrains_, float dt) : VehicleMovement(constrains_) {
+    DifferentialRobotMovement(VehicleConstrains &constrains_, float dt) : VehicleMovement(constrains_) {
         compute_directions();
     }
 

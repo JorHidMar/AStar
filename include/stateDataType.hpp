@@ -51,5 +51,11 @@ struct ListState {
      */
     bool empty();   // TODO: Should it return both lists.
 
+    void print(){
+        for(auto aux: m2){
+            aux.print();
+        }
+    }
+
 };
 

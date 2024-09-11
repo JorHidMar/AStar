@@ -18,7 +18,7 @@ std::vector<State> AStar::explore(State &a){
             continue;
         }
 
-        float new_g = a.g + computeG->compute(a.p, next, board->getValue(next));
+        float new_g = a.g + computeG->compute(a.p, next, 1.+board->getValue(next));
         float new_h = computeH->compute(next, goal);
 
         State new_state = {next, new_g, new_h, new_g + new_h, a.p, false};

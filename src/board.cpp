@@ -133,7 +133,7 @@ void FixedBoard::exportMap(const std::string filename, uint factor){
 
     std::ofstream imageFile(filename);
 
-    imageFile << "P2\n" << factor * (max_j - min_j) << " " << factor * (max_i - min_i) << "\n255\n";
+    imageFile << "P3\n" << factor * (max_j - min_j) << " " << factor * (max_i - min_i) << "\n255\n";
 
     for(int i=factor*min_i; i<factor*max_i; i++){
         for(int j=factor*min_j; j<factor*max_j; j++){
@@ -145,7 +145,11 @@ void FixedBoard::exportMap(const std::string filename, uint factor){
                 value = unknown_cell;
             }
             auto v = value * 255.;
-            imageFile << (int)v << " ";
+            if(value > 1.2){
+                imageFile << (int)v << " " << 0 << " " << 0 << " ";
+            } else {
+                imageFile << (int)v << " " << (int)v << " " << (int)v << " ";
+            }
         }
         imageFile << "\n";
     }
