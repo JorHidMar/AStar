@@ -144,14 +144,15 @@ void FixedBoard::exportMap(const std::string filename, uint factor){
             float value;
             if(board_copy.find(key) != board_copy.end()){
                 value =  board_copy[key];
+                auto v = value * 255.;
+                if(value > 1.2){
+                    imageFile << 0 << " " << 0 << " " << (int)v << " ";
+                } else {
+                    imageFile << (int)v << " " << (int)v << " " << (int)v << " ";
+                }
             } else {
-                value = unknown_cell;
-            }
-            auto v = value * 255.;
-            if(value > 1.2){
+                auto v = unknown_cell * 255.;
                 imageFile << (int)v << " " << 0 << " " << 0 << " ";
-            } else {
-                imageFile << (int)v << " " << (int)v << " " << (int)v << " ";
             }
         }
         imageFile << "\n";
@@ -197,14 +198,15 @@ void FixedBoard::exportMapAndPath(const std::string filename, std::vector<Vehicl
             float value;
             if(board_copy.find(key) != board_copy.end()){
                 value =  board_copy[key];
+                auto v = value * 255.;
+                if(value > 1.2){
+                    imageFile << 0 << " " << 0 << " " << (int)v << " ";
+                } else {
+                    imageFile << (int)v << " " << (int)v << " " << (int)v << " ";
+                }
             } else {
-                value = unknown_cell;
-            }
-            auto v = value * 255.;
-            if(value > 1.2){
+                auto v = unknown_cell * 255.;
                 imageFile << (int)v << " " << 0 << " " << 0 << " ";
-            } else {
-                imageFile << (int)v << " " << (int)v << " " << (int)v << " ";
             }
         }
         imageFile << "\n";
