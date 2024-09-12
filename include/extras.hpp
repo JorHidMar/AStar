@@ -154,12 +154,16 @@ struct State
  */
 class computeDistance {
 public:
+    computeDistance(float f_=1.5) : f(f_){}
+
     /**
      * @brief compute Manahattan distance between VehicleState a to b.
      */
-    virtual float compute(VehicleState &a, VehicleState &b, float cost=1.){
-        return cost * (std::abs(b.x-a.x) + std::abs(b.y-a.y));
+    virtual float compute(VehicleState &a, VehicleState &b, float cost=0.){
+        return (1 + 1.5*cost) * (std::abs(b.x-a.x) + std::abs(b.y-a.y));
     }
+protected:
+    float f;
 };
 
 /**
@@ -167,11 +171,14 @@ public:
  */
 class computeEuclideanDistance : public computeDistance {
 public:
+
+    computeEuclideanDistance(float f_=1.5) : computeDistance(f_){}
+
     /**
      * @brief compute euclidean distance between VehicleState a to b.
      */
-    float compute(VehicleState &a, VehicleState &b, float cost=1.) override {
-        return cost * std::sqrt(std::pow(b.x-a.x, 2) + std::pow(b.y-a.y, 2)); 
+    float compute(VehicleState &a, VehicleState &b, float cost=0.) override {
+        return (1+this->f*cost) * std::sqrt(std::pow(b.x-a.x, 2) + std::pow(b.y-a.y, 2)); 
     }
 };
 
@@ -180,11 +187,13 @@ public:
  */
 class computeTimeDistance : public computeDistance {
 public:
+    computeTimeDistance(float f_=1.5) : computeDistance(f_){}
+
     /**
      * @brief compute time difference between VehicleState a to b.
      */
-    float compute(VehicleState &a, VehicleState &b, float cost=1.) override {
-        return (b.dt - a.dt) * cost;    // TODO: dt does not seem to be the best variable name
+    float compute(VehicleState &a, VehicleState &b, float cost=0.) override {
+        return (b.dt - a.dt) * (1 + this->f * cost);    // TODO: dt does not seem to be the best variable name
     }
 };
 

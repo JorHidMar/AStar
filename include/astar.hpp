@@ -116,8 +116,6 @@ private:
     ListState open_st;
     ListState closed_st;
 
-    float threshold = 0.80;
-
     bool foundSolution = false;
 
 private:
