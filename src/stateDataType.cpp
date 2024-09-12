@@ -3,7 +3,6 @@
 // TODO: State must contain state...
 void ListState::insert(State &state){
     
-    //asdf to state
     std::string key = state.p.convert2state();
 
     if(m.find(key) == m.end()){         // If position is not in the list, add insert it to m and m2. 
@@ -12,7 +11,7 @@ void ListState::insert(State &state){
     } else {
         if(m[key].f > state.f){         // If a state for a position exists, update the value if the f value is lower
             auto it_lower = m2.lower_bound(m[key]);
-            for(auto it=it_lower; it->f <= it_lower->f; it++){      // Update the m2 set
+            for(auto it=it_lower; it->f <= it_lower->f; ++it){      // Update the m2 set
                 if(m[key] == *it){
                     m2.erase(it);
                     break;
@@ -28,17 +27,14 @@ void ListState::pop(State &state){
     state = *m2.begin();
     m2.erase(m2.begin());
 
-    //asdf to state
     m.erase(state.p.convert2state());
 }
 
 bool ListState::find(State &state){
-    //asdf to state
     return m.find(state.p.convert2state()) != m.end();
 }
 
 State ListState::findGet(State &state){
-    //asdf to state
     std::string key = state.p.convert2state();
 
     if(m.find(key) != m.end()){

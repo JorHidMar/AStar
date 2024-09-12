@@ -26,19 +26,19 @@ class FixedBoard {
      * @brief Load a board based on a matrix.
      * @param board_: Board to copy.
      */
-    void loadBoard(std::vector<std::vector<float>> board_);
+    void loadBoard(const std::vector<std::vector<float>> &board_);
 
     /**
      * @brief Load a board based on an existing map.
      * @param board_: Board to copy.
      */
-    void loadBoard(Board &board_);
+    void loadBoard(const Board &board_);
 
     /** 
      * @brief Load map from file.
      * @param filename
      */
-    void loadFromFile(std::string filename);
+    void loadFromFile(const std::string &filename);
 
     void operator=(FixedBoard &fb){
         loadBoard(fb.board);
@@ -57,19 +57,19 @@ class FixedBoard {
      * @brief Print the board and a path on top of it.
      * @param path: Path to be printed.
      */
-    void printBoardAndPath(Path path);
+    void printBoardAndPath(const Path &path);
     
     /**
      * @brief Save map in an image.
      * @param filename: Name of the file to export the map.
      */
-    void exportMap(const std::string filename, uint factor=5);
+    void exportMap(const std::string &filename, uint factor=5);
 
     /**
      * @brief Save map in an image.
      * @param filename: Name of the file to export the map.
      */
-    void exportMapAndPath(const std::string filename, Path &path, uint factor=5);
+    void exportMapAndPath(const std::string filename, const Path &path, uint factor=5);
 
     /**
      * @brief Save map in csv file.
@@ -92,14 +92,14 @@ class FixedBoard {
      * @brief Multiply the map for a kernel to expand obstacles or uncertainties.
      * @param kernel: A 3x3 matrix to apply on the map.
      */
-    void expandBoard(std::vector<std::vector<float>> &kernel);
+    void expandBoard(const std::vector<std::vector<float>> &kernel);
 
     /**
      * @brief Get value of the map for a position.
      * @param st: String that we want to get the value "{x}_{y}".
      * @return Value if it exists otherwise it returns unknown_cell.
      */
-    float getValue(std::string st);
+    float getValue(const std::string &st);
 
     /**
      * @brief Get value of the map for a position.
@@ -113,7 +113,7 @@ class FixedBoard {
      * @param st: Position that you want to change.
      * @param v: New value for the position.  
      */
-    void addValue(std::string st, float v);
+    void addValue(const std::string &st, float v);
 
     /**
      * @brief Update value for cells outside of the map

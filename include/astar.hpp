@@ -28,13 +28,13 @@ public:
      * @param p_end:  Final position.
      * @return Found a solution.
      */
-    bool compute(VehicleState &p_init, VehicleState &p_end);
+    bool compute(const VehicleState &p_init, const VehicleState &p_end);
 
     /**
      * @brief Set goal for target position.
      * @param p: Goal position.
      */
-    void setGoal(VehicleState &p);
+    void setGoal(const VehicleState &p);
 
     /**
      * @brief Get goal position.
@@ -46,7 +46,7 @@ public:
      * @brief Set current position.
      * @param p: Current position.
      */
-    void setPosition(VehicleState &p);
+    void setPosition(const VehicleState &p);
 
     /**
      * @brief Get goal for target position.
@@ -71,14 +71,15 @@ public:
      * @param path: Path to be printed on top of the map
      * @note Not suitable for big maps (will not print them properly).
      */
-    void printMapAndPath(Path &path);
+    void printMapAndPath(const Path &path);
 
     /**
      * @brief Export map to ppm file
      * @param filename: Name of file 
      * @note Only supports .ppm format.
      */
-    void exportImage(std::string &filename, uint factor);
+    void exportImage(const std::string &filename, uint factor);
+    // TODO: useless, it shuold print the path too.
 
     /**
      * @brief Set compute cost.

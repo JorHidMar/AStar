@@ -52,7 +52,7 @@ struct VehicleState
     /**
      * @brief Convert the vehicleState to a string with the state.
      */
-    std::string str(){ // TODO you should be able to change this function when defining class
+    std::string str() const { // TODO you should be able to change this function when defining class
         std::string key = std::to_string(x) + "_" + std::to_string(y); 
         return key;  
     }
@@ -206,7 +206,7 @@ class VehicleMovement { //TODO: Review names for derived classes and the descrip
      * @brief Compute the movement, add vehicleState m to vs.
      * @return Resulting state.
      */
-    virtual VehicleState move(VehicleState &vs, VehicleState &m){
+    virtual VehicleState move(VehicleState &vs, const VehicleState &m){
 
         VehicleState state;
 

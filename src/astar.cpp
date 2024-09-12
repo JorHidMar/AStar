@@ -10,7 +10,7 @@ AStar::~AStar(){
 
 std::vector<State> AStar::explore(State &a){
     std::vector<State> next_states;
-    for(auto dp : vehicle->move_directions){
+    for(const auto &dp : vehicle->move_directions){
         VehicleState next = vehicle->move(a.p, dp);
         
         if(!board->checkAvailable(next)){
@@ -54,7 +54,7 @@ bool AStar::compute(){
 
         auto next_steps = explore(current_state);
 
-        for(auto ns : next_steps){
+        for(auto &ns : next_steps){
             bool found = false;
 
             if(closed_st.find(ns)){     // Check if the node was already visited
@@ -67,13 +67,13 @@ bool AStar::compute(){
     return foundSolution;
 }
 
-bool AStar::compute(VehicleState &p_init, VehicleState &p_end){
+bool AStar::compute(const VehicleState &p_init, const VehicleState &p_end){
     setPosition(p_init);
     setGoal(p_end);
     return compute();
 }
 
-void AStar::setGoal(VehicleState &p){
+void AStar::setGoal(const VehicleState &p){
     goal = p;
 }
 
@@ -81,7 +81,7 @@ void AStar::getGoal(VehicleState &p){
     p = goal;
 }
 
-void AStar::setPosition(VehicleState &p){
+void AStar::setPosition(const VehicleState &p){
     pos = p;
 }
 
@@ -112,7 +112,7 @@ bool AStar::getBestPath(Path &path){
     return true;
 }
 
-void AStar::printMapAndPath(Path &path){
+void AStar::printMapAndPath(const Path &path){
     if(path.empty()){
         std::cout << "Path is empty" << std::endl;
         return;
@@ -120,7 +120,7 @@ void AStar::printMapAndPath(Path &path){
     board->printBoardAndPath(path);
 }
 
-void AStar::exportImage(std::string &filename, uint factor){
+void AStar::exportImage(const std::string &filename, uint factor){
     board->exportMap(filename, factor);
 }
 
