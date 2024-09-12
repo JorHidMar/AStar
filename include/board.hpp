@@ -35,6 +35,10 @@ class FixedBoard {
      */
     void loadBoard(std::unordered_map<std::string, float> &board_);
 
+    /** 
+     * @brief Load map from file.
+     * @param filename
+     */
     void loadFromFile(std::string filename);
 
     void operator=(FixedBoard &fb){
@@ -116,9 +120,12 @@ class FixedBoard {
      */
     void updateWallValue(float wall_limit_);
 
+    /**
+     * @brief Copy map to self.
+     */
     void getBoard(std::unordered_map<std::string, float> &board_);
 
-    std::unordered_map<std::string, float> board;
+    std::unordered_map<std::string, float> board;   // TODO: It should be private
 protected:
 
     /**

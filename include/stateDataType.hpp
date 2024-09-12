@@ -15,9 +15,6 @@ struct ListState {
     std::unordered_map<std::string, State> m;       // Fast access to state by position
     std::multiset<State> m2;                        // Fast access to state with lowest f value
 
-    // Insert value in list
-    // If position is not in the list, add insert it to m and m2. 
-    // 
     /**
      * @brief Insert new state in the list.
      * @param state: State to be inserted.
