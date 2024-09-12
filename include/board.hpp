@@ -2,7 +2,6 @@
 
 #include "extras.hpp"
 #include <unordered_map>
-#include <map>
 #include <sstream>
 #include <fstream>
 
@@ -33,7 +32,7 @@ class FixedBoard {
      * @brief Load a board based on an existing map.
      * @param board_: Board to copy.
      */
-    void loadBoard(std::unordered_map<std::string, float> &board_);
+    void loadBoard(Board &board_);
 
     /** 
      * @brief Load map from file.
@@ -58,13 +57,19 @@ class FixedBoard {
      * @brief Print the board and a path on top of it.
      * @param path: Path to be printed.
      */
-    void printBoardAndPath(std::vector<VehicleState> path);
+    void printBoardAndPath(Path path);
     
     /**
      * @brief Save map in an image.
      * @param filename: Name of the file to export the map.
      */
     void exportMap(const std::string filename, uint factor=5);
+
+    /**
+     * @brief Save map in an image.
+     * @param filename: Name of the file to export the map.
+     */
+    void exportMapAndPath(const std::string filename, Path &path, uint factor=5);
 
     /**
      * @brief Save map in csv file.
@@ -123,9 +128,9 @@ class FixedBoard {
     /**
      * @brief Copy map to self.
      */
-    void getBoard(std::unordered_map<std::string, float> &board_);
+    void getBoard(Board &board_);
 
-    std::unordered_map<std::string, float> board;   // TODO: It should be private
+    Board board;   // TODO: It should be private
 protected:
 
     /**
@@ -133,7 +138,7 @@ protected:
      * @param factor: Factor to expand the map.
      * @param board_copy: Copy of the map that you want to augment.
      */
-    void augmentBoard(uint factor, std::unordered_map<std::string, float> &board_copy);
+    void augmentBoard(uint factor, Board &board_copy);
 
 private:
 

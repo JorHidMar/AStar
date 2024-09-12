@@ -1,10 +1,10 @@
 #pragma once
 
-// #include "astar.hpp"
 #include <iostream>
 #include <cmath>
 #include <vector>
 #include <sstream>
+#include <unordered_map>
 
 /**
  * @brief Structure to define the pose and twist of a vehicle.
@@ -267,3 +267,6 @@ public:
     }
 
 };
+
+typedef std::vector<VehicleState> Path;
+typedef std::unordered_map<std::string, float> Board;

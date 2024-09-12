@@ -41,7 +41,7 @@ void FixedBoard::loadBoard(std::vector<std::vector<float>> board_){
     max_j = board_[0].size();
 }
 
-void FixedBoard::loadBoard(std::unordered_map<std::string, float> &board_){
+void FixedBoard::loadBoard(Board &board_){
     board.clear();
     board.insert(board_.begin(), board_.end()); // TODO
 }
@@ -102,17 +102,20 @@ void FixedBoard::printBoard(){
 
 void FixedBoard::printBoardAndPath(std::vector<VehicleState> path){
     // TODO: This should not override the board
+    Board board_copy(board);
+    // board_.insert(board.begin(), board.end());
+
     for(auto p : path){
         std::string st = p.str();
-        board[st] = 2.;
+        board_copy[st] = 2.;
     }
 
     for(int i=min_i; i<max_i; i++){
         for(int j=min_j; j<max_j; j++){
             std::string st = VehicleState::convert2pos(i,j);
 
-            if(board.find(st) != board.end()){
-                std::cout << board[st] << "\t";
+            if(board_copy.find(st) != board_copy.end()){
+                std::cout << board_copy[st] << "\t";
             } else {
                 std::cout << "-\t";
             }
@@ -128,8 +131,61 @@ void FixedBoard::exportMap(const std::string filename, uint factor){
         return;
     }
 
-    std::unordered_map<std::string, float> board_copy;
+    Board board_copy;
     augmentBoard(factor, board_copy);
+
+    std::ofstream imageFile(filename);
+
+    imageFile << "P3\n" << factor * (max_j - min_j) << " " << factor * (max_i - min_i) << "\n255\n";
+
+    for(int i=factor*min_i; i<factor*max_i; i++){
+        for(int j=factor*min_j; j<factor*max_j; j++){
+            std::string key = VehicleState::convert2pos(i,j);
+            float value;
+            if(board_copy.find(key) != board_copy.end()){
+                value =  board_copy[key];
+            } else {
+                value = unknown_cell;
+            }
+            auto v = value * 255.;
+            if(value > 1.2){
+                imageFile << (int)v << " " << 0 << " " << 0 << " ";
+            } else {
+                imageFile << (int)v << " " << (int)v << " " << (int)v << " ";
+            }
+        }
+        imageFile << "\n";
+    }
+    imageFile.close();
+}
+
+void FixedBoard::exportMapAndPath(const std::string filename, std::vector<VehicleState> &path, uint factor){
+
+    if(factor < 2){
+        return;
+    }
+
+    Board board_copy;
+
+    for(auto p : path){
+        std::string st = p.str();
+        board_copy[st] = 2.;
+    }
+
+    augmentBoard(factor, board_copy);
+
+    for(auto p: path){
+        auto n = VehicleState::rConvert2pos(p.str());
+
+        for(int i=0; i<factor; i++){
+            for(int j=0; j<factor; j++){
+                std::string st = VehicleState::convert2pos(n.x*factor+i, n.y*factor+j);
+                board_copy[st] = 2.;
+            }
+            
+        }
+        
+    }
 
     std::ofstream imageFile(filename);
 
@@ -191,7 +247,7 @@ bool FixedBoard::checkAvailable(VehicleState &a){
     return false;
 }
 
-void FixedBoard::augmentBoard(uint factor, std::unordered_map<std::string, float> &board_copy){
+void FixedBoard::augmentBoard(uint factor, Board &board_copy){
 
     for(auto b: board){
         auto n = VehicleState::rConvert2pos(b.first);
@@ -213,7 +269,7 @@ void FixedBoard::updateAugmentBoard(uint factor){
         return;
     }
 
-    std::unordered_map<std::string, float> board_copy;
+    Board board_copy;
     augmentBoard(factor, board_copy);
 
     board.clear();
@@ -229,7 +285,7 @@ void FixedBoard::updateAugmentBoard(uint factor){
 void FixedBoard::expandBoard(std::vector<std::vector<float>> &kernel){
     int kSize = kernel.size()/2;
 
-    std::unordered_map<std::string, float> board_copy;
+    Board board_copy;
     for(auto b: board){
         if(b.second >= wall_limit){
             board_copy[b.first] = 1.;
@@ -280,7 +336,7 @@ void FixedBoard::updateWallValue(float wall_limit_){
     wall_limit = wall_limit_;
 }
 
-void FixedBoard::getBoard(std::unordered_map<std::string, float> &board_){
+void FixedBoard::getBoard(Board &board_){
     board_.clear();
     board_.insert(board.begin(), board.end());
 }

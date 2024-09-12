@@ -93,7 +93,7 @@ void AStar::printMap(){
     board->printBoard();
 }
 
-bool AStar::getBestPath(std::vector<VehicleState> &path){
+bool AStar::getBestPath(Path &path){
     if(!foundSolution){
         std::cout << "Could not find solution" << std::endl;
         return false;
@@ -112,7 +112,7 @@ bool AStar::getBestPath(std::vector<VehicleState> &path){
     return true;
 }
 
-void AStar::printMapAndPath(std::vector<VehicleState> &path){
+void AStar::printMapAndPath(Path &path){
     if(path.empty()){
         std::cout << "Path is empty" << std::endl;
         return;

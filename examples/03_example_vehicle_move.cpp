@@ -42,13 +42,12 @@ int main(){
     astar.compute(iState, fState);
 
     // Get result path
-    std::vector<VehicleState> path;
+    Path path;
     astar.getBestPath(path);
     astar.printMapAndPath(path);
 
     // Export image
-    std::string gray = "output_grayscale.ppm";
-    b->exportMap(gray.c_str(), 20);
+    b->exportMapAndPath("output_grayscale.ppm", path, 20);
 
     return 0;
 }

@@ -77,7 +77,7 @@ Configure A* algorithm
 
 Get path
 
-    std::vector<VehicleState> path;
+    Path path;
     astar.getBestPath(path);
 
 ## Customization

@@ -4,7 +4,6 @@
 #include <vector>
 #include <set>
 #include <memory>
-#include <cmath>
 #include "stateDataType.hpp"
 #include "board.hpp"
 
@@ -65,14 +64,14 @@ public:
      * @param path: Output path to target.
      * @return Could find a path.
      */
-    bool getBestPath(std::vector<VehicleState> &path);
+    bool getBestPath(Path &path);
 
     /**
      * @brief Prints map and path
      * @param path: Path to be printed on top of the map
      * @note Not suitable for big maps (will not print them properly).
      */
-    void printMapAndPath(std::vector<VehicleState> &path);
+    void printMapAndPath(Path &path);
 
     /**
      * @brief Export map to ppm file
