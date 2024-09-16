@@ -5,10 +5,6 @@
 #include <sstream>
 #include <fstream>
 
-// TODO: Make sure that min-max values are updated when adding new values
-// TODO: Remove these values
-// TODO: Board should be a type itself, in general this is some fancy interface to the type..?
-
 class FixedBoard {
     public:
     FixedBoard(float wall_limit_=0.9, float unknown_cell_=0.5);
@@ -130,6 +126,7 @@ class FixedBoard {
      */
     void getBoard(Board &board_);
 
+    // TODO: board should be a type itself with the minimum and maximum
     Board board;   // TODO: It should be private
 protected:
 

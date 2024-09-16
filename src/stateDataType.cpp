@@ -1,6 +1,5 @@
 #include "stateDataType.hpp"
 
-// TODO: State must contain state...
 void ListState::insert(State &state){
     
     std::string key = state.p.convert2state();

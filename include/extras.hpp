@@ -196,7 +196,7 @@ public:
 /**
  * @brief Base class to define vehicle's movement. 
  */
-class VehicleMovement { //TODO: Review names for derived classes and the description
+class VehicleMovement {
 
     public:
 
