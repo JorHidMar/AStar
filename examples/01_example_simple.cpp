@@ -40,8 +40,7 @@ int main(){
     astar.printMapAndPath(path);
 
     // Export image
-    std::string gray = "output_grayscale.ppm";
-    b->exportMap(gray.c_str(), 20);
+    b->exportMap("output.ppm", 20);
 
     return 0;
 }

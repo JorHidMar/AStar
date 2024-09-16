@@ -25,10 +25,7 @@ int main(){
     };
 
     b->expandBoard(kernel_3x3);
-
-
-    std::string gray = "output_grayscale.ppm";
-    b->exportMap(gray.c_str(), 20);
+    b->exportMap("output.ppm", 20);
 
     //////////////////////////////////////////
     std::vector<std::vector<float>> lBoard = {

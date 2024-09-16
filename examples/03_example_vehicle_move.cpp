@@ -36,7 +36,8 @@ int main(){
     
     // Define initial and target position.
     VehicleState iState = {0,0};
-    VehicleState fState = {20,24};
+    // VehicleState fState = {20,24};
+    VehicleState fState = {12,15};
     
     // Compute path
     astar.compute(iState, fState);
@@ -47,7 +48,7 @@ int main(){
     astar.printMapAndPath(path);
 
     // Export image
-    b->exportMapAndPath("output_grayscale.ppm", path, 20);
+    b->exportMapAndPath("output.ppm", path, 20); // TODO: This should be handled by astar class and not board. 
 
     return 0;
 }
