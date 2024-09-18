@@ -141,3 +141,30 @@ TEST_F(listStateTest, overwriteState){
     ASSERT_TRUE(listState.empty());
 
 }
+
+TEST_F(listStateTest, notOverwriteState){
+    std::vector<State> sts = {
+        {{0,0}, 0, 0, 4},
+        {{0,1}, 0, 0, 3},
+        {{1,0}, 0, 0, 2},
+        {{0,0}, 0, 0, 6}
+        };
+
+    for(auto st : sts){
+        listState.insert(st);
+    }
+    
+    State st; 
+
+    listState.pop(st);
+    ASSERT_TRUE(st.p == sts[2].p && st.f == sts[2].f);
+
+    listState.pop(st);
+    ASSERT_TRUE(st.p == sts[1].p && st.f == sts[1].f);
+
+    listState.pop(st);
+    ASSERT_TRUE(st.p == sts[0].p && st.f == sts[0].f);
+    ASSERT_EQ(st.f, 4.);
+    ASSERT_TRUE(listState.empty());
+
+}
