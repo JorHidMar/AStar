@@ -4,7 +4,7 @@
 #include <vector>
 #include <set>
 #include <memory>
-#include "stateDataType.hpp"
+#include "listState.hpp"
 #include "board.hpp"
 
 class AStar{

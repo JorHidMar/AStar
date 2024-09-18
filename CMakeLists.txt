@@ -5,8 +5,11 @@ cmake_minimum_required(VERSION 2.8.11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+enable_testing()
+
 add_subdirectory(src)
 add_subdirectory(examples)
+add_subdirectory(test)
 
 set(CMAKE_INSTALL_PREFIX "/usr/local" CACHE PATH "Installation directory" FORCE)
 
