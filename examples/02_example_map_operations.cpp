@@ -10,12 +10,13 @@ int main(){
     std::shared_ptr<FixedBoard> b = std::make_shared<FixedBoard>(0.95, 0.5);
     b->createEmptyBoard(10,10);
 
-    // Add obstacles
+    // Add obstacles and remove tiles
     b->addValue("1_2", 1.);
-    b->addValue("2_4", 1.);
+    b->addValue(2, 4, 1.);
+    b->removeValue(5,9);
+    b->removeValue("5_8");
 
-    // Augment the size of the map by a factor
-    b->updateAugmentBoard(2);
+    b->printBoard();
 
     // Blurred obstacles using kernel
     std::vector<std::vector<float>> kernel_3x3 = {
@@ -25,9 +26,19 @@ int main(){
     };
 
     b->expandBoard(kernel_3x3);
-    b->exportMap("output.ppm", 20);
+    b->printBoard();
 
-    //////////////////////////////////////////
+    b->exportMapCSV("example_02");
+    b->loadFromFile("example_02");
+
+    // Add value outside of map
+    b->addValue(10,10,0.);
+
+    b->printBoard();
+
+    b->exportMap("example_image_02.ppm", 20);
+
+    ////////////////////////////////////////
     std::vector<std::vector<float>> lBoard = {
         {0, 0, 0, 0, 0},
         {0, 0, -1, -1, 0},
@@ -40,12 +51,10 @@ int main(){
 
     b1->printBoard();
     b1->exportMapCSV("example_2_1");
+    b->loadFromFile("example_2_1");
+    b->printBoard();
 
-    //////////////////////////////////////////
-    std::shared_ptr<FixedBoard> b2 = std::make_shared<FixedBoard>();
-    b2->loadFromFile("example_2_1");
-    b2->printBoard();
-    b2->exportMapCSV("example_2_2");
+    b->exportMap("example_image_02_1.ppm", 20);
 
     return 0;
 }

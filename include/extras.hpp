@@ -269,4 +269,3 @@ public:
 };
 
 typedef std::vector<VehicleState> Path;
-typedef std::unordered_map<std::string, float> Board;

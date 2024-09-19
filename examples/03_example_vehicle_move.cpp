@@ -13,7 +13,6 @@ int main(){
     b->loadFromFile("../examples/example_map");
 
     // Augment the size of the map by a factor
-    b->updateAugmentBoard(2);
     std::vector<std::vector<float>> kernel_5x5 = {
         {0.003663, 0.014652, 0.025641, 0.014652, 0.003663},
         {0.014652, 0.058608, 0.095238, 0.058608, 0.014652},
@@ -36,8 +35,7 @@ int main(){
     
     // Define initial and target position.
     VehicleState iState = {0,0};
-    // VehicleState fState = {20,24};
-    VehicleState fState = {12,15};
+    VehicleState fState = {6,7};
     
     // Compute path
     astar.compute(iState, fState);
@@ -48,7 +46,7 @@ int main(){
     astar.printMapAndPath(path);
 
     // Export image
-    b->exportMapAndPath("output.ppm", path, 20); // TODO: This should be handled by astar class and not board. 
+    b->exportMapAndPath("output_image_03.ppm", path, 20); // TODO: This should be handled by astar class and not board. 
 
     return 0;
 }

@@ -14,6 +14,8 @@ int main(){
     b->addValue("1_2", 1.);
     b->addValue("2_4", 1.);
 
+    b->printBoard();
+
     AStar astar(b);
 
     // Configure A* algorithm
@@ -27,7 +29,7 @@ int main(){
     
     // Define initial and target position.
     VehicleState iState = {0,0};
-    VehicleState fState = {10,10};
+    VehicleState fState = {9,9};
     astar.setPosition(iState);
     astar.setGoal(fState);
     
@@ -40,7 +42,8 @@ int main(){
     astar.printMapAndPath(path);
 
     // Export image
-    b->exportMap("output.ppm", 20);
+    b->exportMap("example_01.ppm", 20);
+    b->exportMapAndPath("example_01_1.ppm", path, 20);
 
     return 0;
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "extras.hpp"
+#include "boardContainer.hpp"
 #include <unordered_map>
 #include <sstream>
 #include <fstream>
@@ -28,20 +28,16 @@ class FixedBoard {
      * @brief Load a board based on an existing map.
      * @param board_: Board to copy.
      */
-    void loadBoard(const Board &board_);
+    void loadBoard(Board &board_);
 
     /** 
      * @brief Load map from file.
      * @param filename
      */
-    void loadFromFile(const std::string &filename);
+    void loadFromFile(const std::string &filename); // TODO: Should carry extra info
 
     void operator=(FixedBoard &fb){
-        loadBoard(fb.board);
-        min_i = fb.min_i;
-        max_i = fb.max_i;
-        min_j = fb.min_j;
-        max_j = fb.max_j;
+        board = fb.board;
     }
 
     /**
@@ -79,12 +75,6 @@ class FixedBoard {
     bool checkAvailable(VehicleState &a);
 
     /**
-     * @brief Expand the map.
-     * @param factor: Factor to expand the map. It must be >1.
-     */
-    void updateAugmentBoard(uint factor=2);
-
-    /**
      * @brief Multiply the map for a kernel to expand obstacles or uncertainties.
      * @param kernel: A 3x3 matrix to apply on the map.
      */
@@ -112,6 +102,27 @@ class FixedBoard {
     void addValue(const std::string &st, float v);
 
     /**
+     * @brief Modify a cell in the map.
+     * @param x: x coordinate
+     * @param y: y coordinate
+     * @param v: New value for the position.  
+     */
+    void addValue(int x, int y, float v);
+
+    /**
+     * @brief Remove a cell in the map.
+     * @param x: x coordinate
+     * @param y: y coordinate
+     */
+    void removeValue(int x, int y);
+
+    /**
+     * @brief Remove a cell in the map.
+     * @param st: Position that you want to change.
+     */
+    void removeValue(const std::string &st);
+
+    /**
      * @brief Update value for cells outside of the map
      */
     void updateUnknownCells(float unknown_cell_);
@@ -128,20 +139,8 @@ class FixedBoard {
 
     // TODO: board should be a type itself with the minimum and maximum
     Board board;   // TODO: It should be private
-protected:
-
-    /**
-     * @brief Expand the map.
-     * @param factor: Factor to expand the map.
-     * @param board_copy: Copy of the map that you want to augment.
-     */
-    void augmentBoard(uint factor, Board &board_copy);
 
 private:
 
-    int min_i=0, max_i=0;
-    int min_j=0, max_j=0;
-
     float wall_limit = 0.9;
-    float unknown_cell = 0.5;
 };
