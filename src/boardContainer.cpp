@@ -83,7 +83,7 @@ void Board::insert(int x, int y, float value){
         if(yRange.find(y) == yRange.end()){
             yRange[y] = 1;
         } else {
-            yRange[x] += 1;
+            yRange[y] += 1;
         }
     } else {
         board[key] = value;
@@ -132,7 +132,7 @@ void Board::insert(const std::string &str, float value){
         if(yRange.find(y) == yRange.end()){
             yRange[y] = 1;
         } else {
-            yRange[x] += 1;
+            yRange[y] += 1;
         }
         
     } else {
@@ -143,7 +143,18 @@ void Board::insert(const std::string &str, float value){
 
 void Board::remove(int x, int y){
     std::string key = std::to_string(x) + "_" + std::to_string(y);
+    if(board.find(key) == board.end()){
+        return;
+    }
     board.erase(key);
+
+    if(board.empty()){
+        xRange.clear();
+        yRange.clear();
+        width = {0,0};
+        height = {0,0};
+        return;
+    }
 
     xRange[x] -= 1;
     yRange[y] -= 1;
@@ -172,7 +183,18 @@ void Board::remove(int x, int y){
 }
 
 void Board::remove(const std::string &str){
+    if(board.find(str) == board.end()){
+        return;
+    }
     board.erase(str);
+
+    if(board.empty()){
+        xRange.clear();
+        yRange.clear();
+        width = {0,0};
+        height = {0,0};
+        return;
+    }
 
     std::stringstream ss(str);
     std::vector<int> n;
@@ -271,4 +293,8 @@ bool Board::find(const std::string &str){
         return true;
     }
     return false;
+}
+
+bool Board::empty(){
+    return board.empty();
 }

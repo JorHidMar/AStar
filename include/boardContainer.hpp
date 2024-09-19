@@ -47,4 +47,7 @@ struct Board
 
     bool find(const std::string &str);
 
+    // TODO: Create empty
+    bool empty();
+
 };
