@@ -8,6 +8,9 @@ target_link_libraries(listStateTest PRIVATE gtest gtest_main AStarLib)
 target_link_libraries(boardContainerTest PRIVATE gtest gtest_main AStarLib)
 
 # Define tests
-add_test(NAME container_tests COMMAND 
-    listStateTest
+add_test(NAME listState_test COMMAND 
+    listStateTest)
+
+# Define tests
+add_test(NAME boardContainer_test COMMAND 
     boardContainerTest)
