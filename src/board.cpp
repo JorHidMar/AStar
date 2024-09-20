@@ -221,6 +221,13 @@ bool FixedBoard::checkAvailable(VehicleState &a){
     return false;
 }
 
+bool FixedBoard::checkCompleteAvailable(VehicleState &a){
+    if(board.get(a.str()) < wall_limit){
+        return true;
+    }
+    return false;
+}
+
 void FixedBoard::expandBoard(const std::vector<std::vector<float>> &kernel){
     int kSize = kernel.size()/2;
 
@@ -284,4 +291,8 @@ void FixedBoard::updateWallValue(float wall_limit_){
 void FixedBoard::getBoard(Board &board_){
     board_.clear();
     board_ = board;
+}
+
+bool FixedBoard::find(const std::string &str){
+    return board.find(str);
 }

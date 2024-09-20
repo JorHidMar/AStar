@@ -32,6 +32,8 @@ public:
      */
     bool compute(const VehicleState &p_init, const VehicleState &p_end);
 
+    bool completeCompute();
+
     /**
      * @brief Set goal for target position.
      * @param p: Goal position.
@@ -111,14 +113,21 @@ protected:
      */
     std::vector<State> explore(State &a);
 
+    /**
+     * @brief Get future states based on present ones.
+     */
+    std::vector<State> completeExplore(State &a);
+
 private:
     VehicleState pos;
     VehicleState goal;
+    VehicleState alternative_target_state;
 
     ListState open_st;
     ListState closed_st;
 
     bool foundSolution = false;
+    bool foundAlternativeSolution = false;
 
 private:
     std::shared_ptr<computeDistance> computeG;

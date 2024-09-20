@@ -9,3 +9,6 @@ target_link_libraries(03_example_vehicle_move PRIVATE AStarLib)
 
 add_executable(04_example_other 04_example_other.cpp)
 target_link_libraries(04_example_other PRIVATE AStarLib)
+
+add_executable(05_example_find_best_solution 05_example_find_best_solution.cpp)
+target_link_libraries(05_example_find_best_solution PRIVATE AStarLib)

@@ -74,6 +74,8 @@ class FixedBoard {
      */
     bool checkAvailable(VehicleState &a);
 
+    bool checkCompleteAvailable(VehicleState &a);
+
     /**
      * @brief Multiply the map for a kernel to expand obstacles or uncertainties.
      * @param kernel: A 3x3 matrix to apply on the map.
@@ -136,6 +138,8 @@ class FixedBoard {
      * @brief Copy map to self.
      */
     void getBoard(Board &board_);
+
+    bool find(const std::string &str);
 
     // TODO: board should be a type itself with the minimum and maximum
     Board board;   // TODO: It should be private
