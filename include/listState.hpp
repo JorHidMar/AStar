@@ -46,6 +46,8 @@ struct ListState {
      */
     bool empty();   // TODO: Should it return both lists.
 
+    void getBestApproximation(State &state);
+
     void print(){
         for(auto aux: m2){
             aux.print();

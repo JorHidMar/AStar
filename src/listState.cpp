@@ -50,3 +50,16 @@ void ListState::clear(){
 bool ListState::empty(){
     return m2.empty();
 }
+
+void ListState::getBestApproximation(State &state){
+    float best_h = m2.begin()->h;
+    auto best_state = m2.begin();
+    for(auto it=m2.begin(); it != m2.end(); ++it){
+        if(it->h < best_h){
+            best_h = it->h;
+            best_state = it;
+        }
+    }
+
+    state = *best_state;
+}

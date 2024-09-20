@@ -93,12 +93,16 @@ void AStar::printMap(){
 }
 
 bool AStar::getBestPath(Path &path){
+    bool found = true;
+    State goal_state;
     if(!foundSolution){
         std::cout << "Could not find solution" << std::endl;
-        return false;
+        closed_st.getBestApproximation(goal_state);
+        found = false;
+    } else {
+        goal_state = {goal};
     }
 
-    State goal_state = {goal};
     auto current_pos = closed_st.findGet(goal_state);
     
     path.push_back(current_pos.p);
@@ -108,7 +112,7 @@ bool AStar::getBestPath(Path &path){
         current_pos = closed_st.findGet(current_state);
     }
 
-    return true;
+    return found;
 }
 
 void AStar::printMapAndPath(const Path &path){
