@@ -30,6 +30,7 @@ struct VehicleState
         w = vs.w;
     }
 
+    // TODO: You might not care about the angle for final position
     bool operator==(VehicleState &p){
         return x == p.x && y == p.y && angle == p.angle;
     }
@@ -50,7 +51,7 @@ struct VehicleState
     }
 
     /**
-     * @brief Convert the vehicleState to a string with the state.
+     * @brief Convert the vehicleState to a string with the position in the map.
      */
     std::string str() const { // TODO you should be able to change this function when defining class
         std::string key = std::to_string(x) + "_" + std::to_string(y); 
@@ -58,36 +59,11 @@ struct VehicleState
     }
 
     /**
-     * @brief Convert the vehicleState to a string with the position for the map.
+     * @brief Convert the vehicleState to a string with the state.
      */
     std::string convert2state(){
-        std::string key = std::to_string(x) + "_" + std::to_string(y); 
+        std::string key = std::to_string(x) + "_" + std::to_string(y) + "_" + std::to_string(angle); 
         return key;  
-    }
-
-    /**
-     * @brief Convert coordinates to string.
-     */
-    static std::string convert2pos(int i, int j){
-        std::string key = std::to_string(i) + "_" + std::to_string(j); 
-        return key;  
-    }
-
-    /**
-     * @brief Convert string to coordinates.
-     */
-    static VehicleState rConvert2pos(const std::string &st){    // TODO: not necessary to return whole state
-        VehicleState vs;
-        std::stringstream ss(st);
-        std::vector<int> n;
-        int k=0;
-        std::string num;
-        while(std::getline(ss, num, '_')){
-            n.push_back(std::stoi(num));
-        }
-        vs.x = n[0];
-        vs.y = n[1];
-        return vs;
     }
     
 };
@@ -158,114 +134,6 @@ struct State
         std::cout << g << ", " << h << ", " << f << ", Pos: ";
         p.print();
     }
-};
-
-/**
- * @brief Base class to compute distance. 
- */
-class computeDistance {
-public:
-    computeDistance(float f_=1.5) : f(f_){}
-
-    /**
-     * @brief compute Manahattan distance between VehicleState a to b.
-     */
-    virtual float compute(VehicleState &a, VehicleState &b, float cost=0.){
-        return (1 + 1.5*cost) * (std::abs(b.x-a.x) + std::abs(b.y-a.y));
-    }
-protected:
-    float f;
-};
-
-/**
- * @brief Compute euclidean distance.
- */
-class computeEuclideanDistance : public computeDistance {
-public:
-
-    computeEuclideanDistance(float f_=1.5) : computeDistance(f_){}
-
-    /**
-     * @brief compute euclidean distance between VehicleState a to b.
-     */
-    float compute(VehicleState &a, VehicleState &b, float cost=0.) override {
-        return (1+this->f*cost) * std::sqrt(std::pow(b.x-a.x, 2) + std::pow(b.y-a.y, 2)); 
-    }
-};
-
-/**
- * @brief Base class to define vehicle's movement. 
- */
-class VehicleMovement {
-
-    public:
-
-    VehicleMovement(VehicleConstrains &constrains_) : constrains(constrains_){}
-
-    /**
-     * @brief Compute the movement, add vehicleState m to vs.
-     * @return Resulting state.
-     */
-    virtual VehicleState move(VehicleState &vs, const VehicleState &m){
-
-        VehicleState state;
-
-        state.x = vs.x + m.x;
-        state.y = vs.y + m.y;
-
-        return state;
-    }
-
-    void print(){
-        for(auto d: move_directions){
-            std::cout << "Pos: " << d.x << " " << d.y << ", Speed: " << d.v << " " << d.w << ", Time: " << d.dt << std::endl;
-        }
-    }
-
-    std::vector<VehicleState> move_directions = {{0,1}, {0,-1}, {1,0}, {-1,0}};
-    VehicleConstrains constrains;
-
-protected:
-
-    /**
-     * @brief Check if value is within range.
-     * @param a Value that we have.
-     * @param m Maximum value we can have.
-     * @return Corrected value.
-     */
-    float applyConst(float a, float m){
-        return (std::abs(a) <= m) ? a : (a <= 0 ? -m : m);
-    }
-
-    /**
-     * @brief Angle between [-pi, pi)
-     */
-    float normalizeAngle(float ang){ // 
-        float a=ang;
-        if(ang > M_PI ){
-            a -= 2*M_PI;
-        } else if(ang < -M_PI){
-            a += 2*M_PI;
-        }
-
-        return a;
-    }
-};
-
-/**
- * @brief Vehicle movement for 8 directions
- */
-class MultiDirectionVehicleMovement : public VehicleMovement {
-public:
-    MultiDirectionVehicleMovement(VehicleConstrains &constrains_) : VehicleMovement(constrains_){
-        compute_directions();
-    }
-
-    void compute_directions(){
-        this->move_directions.clear();
-        this->move_directions = {{-1,-1}, {-1,0}, {-1,1}, {0,-1}, {0,1}, {1,-1}, {1,0}, {1,1}};
-    }
-
 };
 
 typedef std::vector<VehicleState> Path;

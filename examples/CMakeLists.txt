@@ -6,3 +6,6 @@ target_link_libraries(02_example_map_operations PRIVATE AStarLib)
 
 add_executable(03_example_vehicle_move 03_example_vehicle_move.cpp)
 target_link_libraries(03_example_vehicle_move PRIVATE AStarLib)
+
+add_executable(04_example_other 04_example_other.cpp)
+target_link_libraries(04_example_other PRIVATE AStarLib)

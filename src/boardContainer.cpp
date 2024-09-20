@@ -52,6 +52,7 @@ void Board::insertMatrix(std::vector<std::vector<float>> m){
 }
 
 void Board::insert(int x, int y, float value){
+    // TODO: This should be a function
     std::string key = std::to_string(x) + "_" + std::to_string(y);
     if(board.find(key) == board.end()){
 
@@ -297,4 +298,15 @@ bool Board::find(const std::string &str){
 
 bool Board::empty(){
     return board.empty();
+}
+
+std::pair<int, int> Board::getPosition(const std::string &str){
+    std::stringstream ss(str);
+    std::vector<int> n;
+    std::string num;
+    while(std::getline(ss, num, '_')){
+        n.push_back(std::stoi(num));
+    }
+
+    return {n[0], n[1]};
 }

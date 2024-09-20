@@ -40,7 +40,6 @@ bool AStar::compute(){
     open_st.insert(st);
     
 
-    int s = 0;
     while(!open_st.empty()){            // If empty, there is no solution
         State current_state;
         open_st.pop(current_state);

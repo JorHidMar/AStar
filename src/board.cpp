@@ -55,10 +55,9 @@ void FixedBoard::printBoard(){
 
     for(int i=yrange.first; i<=yrange.second; ++i){
         for(int j=xrange.first; j<=xrange.second; ++j){
-            std::string st = VehicleState::convert2pos(j,i);
 
-            if(board.find(st)){
-                std::cout << board.get(st) << "\t";
+            if(board.find(j, i)){
+                std::cout << board.get(j, i) << "\t";
             } else {
                 std::cout << "-\t";
             }
@@ -81,10 +80,9 @@ void FixedBoard::printBoardAndPath(const Path &path){
 
     for(int i=yrange.first; i<=yrange.second; ++i){
         for(int j=xrange.first; j<=xrange.second; ++j){
-            std::string st = VehicleState::convert2pos(j, i);
 
-            if(board_copy.find(st)){
-                std::cout << board_copy[st] << "\t";
+            if(board_copy.find(j, i)){
+                std::cout << board_copy.get(j,i) << "\t";
             } else {
                 std::cout << "-\t";
             }
@@ -233,12 +231,13 @@ void FixedBoard::expandBoard(const std::vector<std::vector<float>> &kernel){
             continue;
         }
 
-        auto n = VehicleState::rConvert2pos(b.first);        
+        auto n = Board::getPosition(b.first);
+
         float new_value = 0.;
         // TODO: Find better alternative that can better suit larger kernels. Although I would say that kernels of size 3x3 - 5x5 should be enough.  
         for(int i=-kSize; i<=kSize; ++i){
             for(int j=-kSize; j<=kSize; ++j){
-                new_value += kernel[i+kSize][j+kSize] * board.get(n.x+i, n.y+j);
+                new_value += kernel[i+kSize][j+kSize] * board.get(n.first+i, n.second+j);
             }
         }
 

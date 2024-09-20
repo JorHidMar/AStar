@@ -35,7 +35,9 @@ int main(){
     
     // Define initial and target position.
     VehicleState iState = {0,0};
-    VehicleState fState = {6,7};
+    // VehicleState fState = {6,7};
+    // VehicleState fState = {10,11};
+    VehicleState fState = {12, 6};
     
     // Compute path
     astar.compute(iState, fState);

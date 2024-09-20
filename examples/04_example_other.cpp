@@ -9,57 +9,46 @@ int main(){
     std::cout << std::fixed << std::setprecision(3);
 
     // Generate new map 10x10
-    std::shared_ptr<FixedBoard> b = std::make_shared<FixedBoard>(0.95, 0.0);
-    b->loadFromFile("../examples/example_map_small");
+    std::shared_ptr<FixedBoard> b = std::make_shared<FixedBoard>(0.95, 0.5);
+    b->loadFromFile("../examples/example_map");
 
     // Augment the size of the map by a factor
-
-    // Blurred obstacles using kernel
-    std::vector<std::vector<float>> kernel_3x3 = {
-        {0.0833, 0.1667, 0.0833},
-        {0.1667, 0.0000, 0.1667},
-        {0.0833, 0.1667, 0.0833}
+    std::vector<std::vector<float>> kernel_5x5 = {
+        {0.003663, 0.014652, 0.025641, 0.014652, 0.003663},
+        {0.014652, 0.058608, 0.095238, 0.058608, 0.014652},
+        {0.025641, 0.095238, 0.150183, 0.095238, 0.025641},
+        {0.014652, 0.058608, 0.095238, 0.058608, 0.014652},
+        {0.003663, 0.014652, 0.025641, 0.014652, 0.003663}
     };
-    // b->updateAugmentBoard(2);
-    // std::vector<std::vector<float>> kernel_5x5 = {
-    //     {0.003663, 0.014652, 0.025641, 0.014652, 0.003663},
-    //     {0.014652, 0.058608, 0.095238, 0.058608, 0.014652},
-    //     {0.025641, 0.095238, 0.150183, 0.095238, 0.025641},
-    //     {0.014652, 0.058608, 0.095238, 0.058608, 0.014652},
-    //     {0.003663, 0.014652, 0.025641, 0.014652, 0.003663}
-    // };
-    b->expandBoard(kernel_3x3);
+    b->expandBoard(kernel_5x5);
     
     AStar astar(b);
 
     // Configure A* algorithm
     VehicleConstrains constrains;
-    std::shared_ptr<computeDistance> computeClass = std::make_shared<computeEuclideanDistance>();
-    std::shared_ptr<VehicleMovement> vMove = std::make_shared<MultiDirectionVehicleMovement>(constrains);
-    // std::shared_ptr<VehicleMovement> vMove = std::make_shared<VehicleMovement>(constrains);
+    std::shared_ptr<computeDistance> computeCostClass = std::make_shared<timeDistance>(1.5);
+    std::shared_ptr<computeDistance> computeHeuristicClass = std::make_shared<multiTimeDistance>(1.5);
+    std::shared_ptr<VehicleMovement> vMove = std::make_shared<SingleVehicleMovement>(constrains);
 
-    astar.setComputeCost(computeClass);
-    astar.setComputeHeuristic(computeClass);
+    astar.setComputeCost(computeCostClass);
+    astar.setComputeHeuristic(computeHeuristicClass);
     astar.setVehicle(vMove);
     
     // Define initial and target position.
     VehicleState iState = {0,0};
-    // VehicleState fState = {12,9};
-    VehicleState fState = {4,4};
-    astar.setPosition(iState);
-    astar.setGoal(fState);
+    // VehicleState fState = {10,11};
+    VehicleState fState = {14, 6};
     
     // Compute path
-    astar.compute();
+    astar.compute(iState, fState);
 
     // Get result path
-    std::vector<VehicleState> path;
+    Path path;
     astar.getBestPath(path);
     astar.printMapAndPath(path);
 
     // Export image
-    std::string gray = "output_grayscale.ppm";
-    b->exportMap(gray.c_str(), 20);
+    b->exportMapAndPath("output_image_04.ppm", path, 20); // TODO: This should be handled by astar class and not board. 
 
     return 0;
 }

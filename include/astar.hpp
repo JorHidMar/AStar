@@ -6,6 +6,8 @@
 #include <memory>
 #include "listState.hpp"
 #include "board.hpp"
+#include "vehicleMovement.hpp"
+#include "distanceCompute.hpp"
 
 class AStar{
 

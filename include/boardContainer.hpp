@@ -50,4 +50,6 @@ struct Board
     // TODO: Create empty
     bool empty();
 
+    static std::pair<int, int> getPosition(const std::string &str);
+
 };
