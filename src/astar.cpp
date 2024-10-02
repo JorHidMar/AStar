@@ -40,7 +40,7 @@ std::vector<State> AStar::completeExplore(State &a){
         }
 
         float new_g = a.g + computeG->compute(a.p, next, board->getValue(next));
-        float new_h = computeH->compute(next, goal);
+        float new_h = computeH->compute(next, pos);
 
         State new_state = {next, new_g, new_h, new_g + new_h, a.p, false};
 
