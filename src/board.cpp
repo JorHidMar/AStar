@@ -110,7 +110,6 @@ void FixedBoard::exportMap(const std::string &filename, uint factor){
 
     imageFile << "P3\n" << factor * (xrange.second - xrange.first + 1) << " " << factor * (yrange.second - yrange.first + 1) << "\n255\n";
 
-    // TODO: Unknown could be separate value
     for(int i=yrange.first; i<=yrange.second; ++i){
         for(int k=0; k<factor; ++k){
             for(int j=xrange.first; j<=xrange.second; ++j){
@@ -295,4 +294,27 @@ void FixedBoard::getBoard(Board &board_){
 
 bool FixedBoard::find(const std::string &str){
     return board.find(str);
+}
+
+bool FixedBoard::updatePositionGoal(int x, int y, int margin){
+    auto w = board.getWidthRange();
+    auto h = board.getHeightRange();
+
+    widthRange.first = std::min(x-margin, w.first-margin);
+    widthRange.second = std::max(x+margin, w.second+margin);
+    heightRange.first = std::min(y-margin, h.first-margin);
+    heightRange.second = std::max(y+margin, h.second+margin);
+}
+
+bool FixedBoard::inRange(int x, int y){
+
+    if(x < widthRange.first || x > widthRange.second){
+        return false;
+    }
+
+    if(y < heightRange.first || y > heightRange.second){
+        return false;
+    }
+
+    return true;
 }

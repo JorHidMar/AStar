@@ -129,7 +129,6 @@ private:
     bool foundSolution = false;
     bool foundAlternativeSolution = false;
 
-private:
     std::shared_ptr<computeDistance> computeG;
     std::shared_ptr<computeDistance> computeH;
     std::shared_ptr<VehicleMovement> vehicle;

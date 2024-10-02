@@ -12,3 +12,6 @@ target_link_libraries(04_example_other PRIVATE AStarLib)
 
 add_executable(05_example_find_best_solution 05_example_find_best_solution.cpp)
 target_link_libraries(05_example_find_best_solution PRIVATE AStarLib)
+
+add_executable(06_example_closed_map 06_example_closed_map.cpp)
+target_link_libraries(06_example_closed_map PRIVATE AStarLib)

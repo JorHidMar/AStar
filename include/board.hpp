@@ -141,10 +141,16 @@ class FixedBoard {
 
     bool find(const std::string &str);
 
-    // TODO: board should be a type itself with the minimum and maximum
+    bool updatePositionGoal(int x, int y, int margin=2);
+
+    bool inRange(int x, int y);
+
     Board board;   // TODO: It should be private
 
 private:
 
     float wall_limit = 0.9;
+
+    std::pair<int, int> widthRange = {0,0};
+    std::pair<int, int> heightRange = {0, 0};
 };

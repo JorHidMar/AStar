@@ -105,7 +105,7 @@ public:
             return state;
         }
 
-        switch (state.angle){              // TODO: Unnecessary when m.angle != 0
+        switch (state.angle){
             case -135:
                 state.x -= m.x;
                 state.y += m.x;       // Board should be inverted at some point to avoid this

@@ -56,6 +56,10 @@ bool AStar::compute(){
     open_st.clear();
     closed_st.clear();
 
+    if(!board->checkCompleteAvailable(goal)){
+        return false;
+    }
+
     float init_h = computeH->compute(pos, goal);
     State st = {pos, 0, init_h, init_h, pos, true};
     open_st.insert(st);
@@ -99,16 +103,25 @@ bool AStar::completeCompute(){
     ListState new_open_st;
     ListState new_close_st;
 
+    if(!board->checkCompleteAvailable(goal)){
+        return false;
+    }
 
     float init_h = computeH->compute(goal, pos);
     State st = {goal, 0, init_h, init_h, goal, true};
     new_open_st.insert(st);
+    board->updatePositionGoal(goal.x, goal.y);
     
 
     while(!new_open_st.empty()){            // If empty, there is no solution
         State current_state;
         new_open_st.pop(current_state);
-        new_close_st.insert(current_state);   
+        new_close_st.insert(current_state);
+
+        if(!board->inRange(current_state.p.x, current_state.p.y)){
+            std::cout << "Imposible to find alternative solution" << std::endl;
+            break;
+        } 
 
         if(board->find(current_state.p.str())){
             foundAlternativeSolution = true;
@@ -153,13 +166,11 @@ void AStar::printMap(){
 }
 
 bool AStar::getBestPath(Path &path){
-    bool found = true;
     State goal_state;
     if(!foundSolution){
         if(!foundAlternativeSolution){
             std::cout << "State is unreachable" << std::endl;
-            // closed_st.getBestApproximation(goal_state);
-            found = false;
+            return false;
         } else {
             goal_state = {alternative_target_state};
         }
@@ -176,7 +187,7 @@ bool AStar::getBestPath(Path &path){
         current_pos = closed_st.findGet(current_state);
     }
 
-    return found;
+    return true;
 }
 
 void AStar::printMapAndPath(const Path &path){

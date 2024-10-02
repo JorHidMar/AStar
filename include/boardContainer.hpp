@@ -47,7 +47,6 @@ struct Board
 
     bool find(const std::string &str);
 
-    // TODO: Create empty
     bool empty();
 
     static std::pair<int, int> getPosition(const std::string &str);
