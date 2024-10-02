@@ -23,7 +23,6 @@ You can also create a `.deb` package using `cpack`:
 * Import a map from a CSV file. 
 * Export the map to a CSV or image file.
 * Expand obstacles in the map.
-* Augment the size of the map.
 * Support irregular and incomplete maps.
 * Support for dynamic maps (under development).
 
@@ -31,6 +30,7 @@ You can also create a `.deb` package using `cpack`:
 * Easy to customize cost and heuristic functions.
 * Easy to customize vehicle's movement.
 * Support for adding vehicle constraints (under development).
+* Most promising path for targets outside known map.
 
 ## Examples
 
@@ -47,10 +47,6 @@ Apply kernel
         {0.0625, 0.125, 0.0625}
     };
     b->expandBoard(kernel_3x3);
-
-Augment map
-
-    b->updateAugmentBoard(2);
 
 Export map
 
